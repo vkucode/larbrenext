@@ -5,8 +5,8 @@ export default async function handler(req, res) {
     const dbconnection = await mysql.createConnection({
       host: "localhost",
       database: "larbreapains",
-      user: "root", //larbreapains
-      // password: "KODulFPwugHRiKO",
+      user: "larbreapains", //larbreapains
+      password: "KODulFPwugHRiKO",
     });
 
     // const [rows] = await dbconnection.execute(
