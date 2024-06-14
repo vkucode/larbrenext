@@ -9,9 +9,6 @@ export default async function handler(req, res) {
       password: "KODulFPwugHRiKO",
     });
 
-    // const [rows] = await dbconnection.execute(
-    //   'SELECT * FROM produits WHERE tip_produs = "Cuit"'
-    // );
     const query =
       "SELECT id, tip_produs, categoria_produs, nume_produs, descriere_produs, imagine_produs FROM produits";
     const values = [];
