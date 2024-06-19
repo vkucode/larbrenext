@@ -10,7 +10,7 @@ export default function Pain() {
   useEffect(() => {
     async function getPageData() {
       try {
-        const apiUrlEndPoint = `https://larbreapains.fr/api/getdata`;
+        const apiUrlEndPoint = `http://localhost:3000/api/getdata`;
         const response = await fetch(apiUrlEndPoint);
         if (!response.ok) {
           throw new Error('Network response was not ok');
