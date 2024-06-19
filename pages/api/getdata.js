@@ -18,16 +18,20 @@ export default async function handler(req, res) {
       user: "larbreapains",
       password: "KODulFPwugHRiKO",
     });
+    console.log("Database connection established");
 
     const query =
       "SELECT id, tip_produs, categoria_produs, nume_produs, descriere_produs, imagine_produs FROM produits";
     const values = [];
     const [results] = await dbconnection.execute(query, values);
+    console.log("Query executed successfully");
 
     dbconnection.end();
+    console.log("Database connection closed");
 
     res.status(200).json({ products: results });
   } catch (error) {
+    console.error("Error occurred:", error);
     res.status(500).json({ error: error.message });
   }
 }
