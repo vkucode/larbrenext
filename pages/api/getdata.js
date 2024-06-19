@@ -32,7 +32,13 @@ export default async function handler(req, res) {
 
     res.status(200).json({ products: results });
   } catch (error) {
-    console.error("Error occurred:", error);
+    if (error instanceof mysql.SqlError) {
+      console.error("SQL error occurred:", error.message);
+    } else if (error instanceof mysql.ConnectionError) {
+      console.error("Connection error occurred:", error.message);
+    } else {
+      console.error("Unknown error occurred:", error.message);
+    }
     res.status(500).json({ error: error.message || "Unknown error" });
   }
 }
