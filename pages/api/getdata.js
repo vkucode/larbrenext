@@ -6,12 +6,12 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") {
-    // Pre-flight request for CORS
     res.status(200).end();
     return;
   }
 
   try {
+    console.log("Attempting to connect to the database...");
     const dbconnection = await mysql.createConnection({
       host: "localhost",
       database: "larbreapains",
@@ -23,8 +23,9 @@ export default async function handler(req, res) {
     const query =
       "SELECT id, tip_produs, categoria_produs, nume_produs, descriere_produs, imagine_produs FROM produits";
     const values = [];
+    console.log("Executing query:", query);
     const [results] = await dbconnection.execute(query, values);
-    console.log("Query executed successfully");
+    console.log("Query executed successfully, results:", results);
 
     dbconnection.end();
     console.log("Database connection closed");
