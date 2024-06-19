@@ -1,11 +1,21 @@
 import mysql from "mysql2/promise";
 
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    // Pre-flight request for CORS
+    res.status(200).end();
+    return;
+  }
+
   try {
     const dbconnection = await mysql.createConnection({
       host: "localhost",
       database: "larbreapains",
-      user: "larbreapains", //larbreapains
+      user: "larbreapains",
       password: "KODulFPwugHRiKO",
     });
 
