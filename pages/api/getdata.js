@@ -13,10 +13,10 @@ export default async function handler(req, res) {
   try {
     console.log("Attempting to connect to the database...");
     const dbconnection = await mysql.createConnection({
-      host: "https://phpmyadmin.web-1.anybug.fr/",
+      host: "localhost",
       database: "larbreapains",
       user: "larbreapains",
-      password: "KODulFPwugHRiKO",
+      password: "adminVku23#",
     });
     console.log("Database connection established");
 
