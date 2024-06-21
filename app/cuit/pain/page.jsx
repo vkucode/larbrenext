@@ -3,14 +3,17 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from '../cuit.module.scss'
 import { IoIosSearch } from "react-icons/io";
+import { HiXMark } from "react-icons/hi2";
 
 export default function Pain() {
   const [dataResponse, setDataResponse] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null); // State pentru produsul selectat
+  const [isPopupVisible, setIsPopupVisible] = useState(false); // State pentru vizibilitatea popup-ului
 
   useEffect(() => {
     async function getPageData() {
       try {
-        const apiUrlEndPoint = `https://larbreapains.fr/api/getdata`; // Actualizează URL-ul API
+        const apiUrlEndPoint = `https://larbreapains.fr/api/getdata`;
         const response = await fetch(apiUrlEndPoint);
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -28,6 +31,16 @@ export default function Pain() {
 
   const filteredProducts = dataResponse.filter(product => product.tip_produs === "Cuit" && product.categoria_produs === 'Pain');
 
+  const handleProductClick = (product) => {
+    setSelectedProduct(product); // Setăm produsul selectat
+    setIsPopupVisible(true); // Afișăm popup-ul
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupVisible(false); // Ascundem popup-ul
+    setSelectedProduct(null); // Resetăm produsul selectat
+  };
+
   return (
     <section className={styles.sectionCatalog}>
         <div className={styles.filterBlock}>
@@ -36,7 +49,7 @@ export default function Pain() {
         </div>
       <div className={styles.catalogProducts}>
         {filteredProducts.map((product) => (
-            <div key={product.id} className={styles.productCard}>
+            <div key={product.id} className={styles.productCard} onClick={() => handleProductClick(product)}>
             <h1>{product.nume_produs}</h1>
             <Image
                 src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}`}
@@ -47,7 +60,32 @@ export default function Pain() {
             </div>
         ))}
       </div>
-      
+
+      {isPopupVisible && selectedProduct && (
+        <div className={styles.popup}>
+          <div className={styles.popupContent}>
+            <Image src="/img/logow.png" width={200} height={200} alt="L'arbre A Pains" className={styles.popupLogo} />
+            <div className={styles.popupImg}>
+              <Image
+                    src={`https://larbreapains.fr/img/imgProducts/${selectedProduct.imagine_produs}`}
+                    width={400}
+                    height={400}
+                    alt={selectedProduct.nume_produs}
+                />
+            </div>
+
+            <div className={styles.popupText}>
+              <button onClick={handleClosePopup} className={styles.closeButton}><HiXMark /></button>
+              <h1>{selectedProduct.nume_produs}</h1>
+              <p>{selectedProduct.descriere_produs}</p>
+            </div>
+            
+
+            
+            {/* Adăugăm alte informații despre produs aici */}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
