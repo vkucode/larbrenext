@@ -72,6 +72,7 @@ export default function Pain() {
                     height={400}
                     alt={selectedProduct.nume_produs}
                 />
+                <button onClick={handleClosePopup} className={styles.closeButtonMb}><HiXMark /></button>
             </div>
 
             <div className={styles.popupText}>

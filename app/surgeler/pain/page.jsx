@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from '../surgeler.module.scss'
 import { IoIosSearch } from "react-icons/io";
+import { HiXMark } from "react-icons/hi2";
 
 export default function Pain() {
   const [dataResponse, setDataResponse] = useState([]);
@@ -41,6 +42,7 @@ export default function Pain() {
   };
 
   return (
+
     <section className={styles.sectionCatalog}>
         <div className={styles.filterBlock}>
             <IoIosSearch />
@@ -63,15 +65,25 @@ export default function Pain() {
       {isPopupVisible && selectedProduct && (
         <div className={styles.popup}>
           <div className={styles.popupContent}>
-            <button onClick={handleClosePopup} className={styles.closeButton}>Close</button>
-            <h1>{selectedProduct.nume_produs}</h1>
-            <Image
-                src={`https://larbreapains.fr/img/imgProducts/${selectedProduct.imagine_produs}`}
-                width={400}
-                height={400}
-                alt={selectedProduct.nume_produs}
-            />
-            <p>{selectedProduct.descriere_produs}</p>
+            <Image src="/img/logow.png" width={200} height={200} alt="L'arbre A Pains" className={styles.popupLogo} />
+            <div className={styles.popupImg}>
+              <Image
+                    src={`https://larbreapains.fr/img/imgProducts/${selectedProduct.imagine_produs}`}
+                    width={400}
+                    height={400}
+                    alt={selectedProduct.nume_produs}
+                />
+                <button onClick={handleClosePopup} className={styles.closeButtonMb}><HiXMark /></button>
+            </div>
+
+            <div className={styles.popupText}>
+              <button onClick={handleClosePopup} className={styles.closeButton}><HiXMark /></button>
+              <h1>{selectedProduct.nume_produs}</h1>
+              <p>{selectedProduct.descriere_produs}</p>
+            </div>
+            
+
+            
             {/* Adăugăm alte informații despre produs aici */}
           </div>
         </div>
@@ -79,3 +91,4 @@ export default function Pain() {
     </section>
   );
 }
+
