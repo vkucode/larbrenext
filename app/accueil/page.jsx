@@ -30,7 +30,7 @@ export default function AccueilPage() {
         <div className={styles.aboutContent}>
           <h1>Qui&nbsp;sommes&nbsp;nous</h1>
           <div className="flex-col-reverse lg:flex-row">
-            <Image src="/img/fond.png" width={400} height={400} alt="about us" />
+            <Image src="/img/categories/img1.jpg" width={400} height={400} alt="about us" />
             <p className="text-center lg:text-left">
               L’ Arbre à Pains propose aux professionnels de l’hôtellerie et de la restauration une sélection rigoureuse de pains et viennoiseries héritée de la grande tradition boulangère et pâtissière française.
             </p>
@@ -39,7 +39,7 @@ export default function AccueilPage() {
             <p className="text-center lg:text-right">
               Plus qu’un fournisseur, L’ Arbre à Pains a l’ambition d’être votre partenaire pour vous proposer des pains et viennoiseries authentiques et subtilement équilibrés.
             </p>
-            <Image src="/img/fond.png" width={400} height={400} alt="about us" />
+            <Image src="/img/categories/img3.jpg" width={400} height={400} alt="about us" />
           </div>
           <p className={styles.aboutConclusion}>
             Nous restons attentifs aux évolutions du marché et à vos attentes afin de vous offrir la meilleure qualité, ainsi qu&apos;un service optimal à hotline 24h/24 et 7j/7 (jours fériés inclus).
