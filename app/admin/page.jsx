@@ -18,7 +18,7 @@ export default function Admin() {
     setError('');
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('https://larbreapains.fr/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user: login, pass }),
