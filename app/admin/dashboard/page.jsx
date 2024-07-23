@@ -1,8 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import styles from './general.module.scss';
+import { TbEdit, TbTrash, TbPlus } from "react-icons/tb";
 
 export default function Dashboard() {
   const [products, setProducts] = useState([]);
@@ -23,15 +25,20 @@ export default function Dashboard() {
 
   return (
     <section className={styles.dashboard}>
-      <h1>Product Dashboard</h1>
-      <Link href="/admin/dashboard/add"><button>Add Product</button></Link>
+      <div className='flex flex-row justify-between items-center w-full max-w-6xl'>
+        <h1>Product Dashboard</h1>
+        <Link href="/admin/dashboard/add"><button>Ajouter&nbsp;<TbPlus /></button></Link>
+      </div>
       <div className={styles.productList}>
         {products.map((product) => (
           <div key={product.id} className={styles.productItem}>
-            <h2>{product.nume_produs}</h2>
-            <Link href={`/admin/dashboard/edit/${product.id}`}><button>Edit</button></Link>
-            <Link href={`/admin/dashboard/delete/${product.id}`}><button>Delete</button></Link>
-          </div>
+            <h1>{product.nume_produs}</h1>
+            <Image src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}`} width={150} height={150} />
+              <div className={styles.controlBtns}>
+                <Link href={`/admin/dashboard/edit/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
+                <Link href={`/admin/dashboard/delete/${product.id}`}><button>Delete&nbsp;<TbTrash /></button></Link>
+              </div>
+            </div>
         ))}
       </div>
     </section>
