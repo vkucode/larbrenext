@@ -33,7 +33,7 @@ export default function Dashboard() {
         {products.map((product) => (
           <div key={product.id} className={styles.productItem}>
             <h1>{product.nume_produs}</h1>
-            <Image src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}`} width={150} height={150} />
+            <Image src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}`} alt={product.nume_produs} width={150} height={150} />
               <div className={styles.controlBtns}>
                 <Link href={`/admin/dashboard/edit/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
                 <Link href={`/admin/dashboard/delete/${product.id}`}><button>Delete&nbsp;<TbTrash /></button></Link>
