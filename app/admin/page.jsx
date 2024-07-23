@@ -39,7 +39,7 @@ export default function Admin() {
     <section className={styles.loginSection}>
       <form onSubmit={handleSubmit}>
         <Image src="/img/v2t.png" width={110} height={110} alt="logo" />
-        <h2>Console d'administration</h2>
+        <h2>Console d&apos;administration</h2>
         <div className={styles.inputDiv}>
           <FaUser />
           <input
