@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "POST") {
     const form = new formidable.IncomingForm();
-    form.uploadDir = "/home/imgProducts";
+    form.uploadDir = "/img/imgProducts/";
     form.keepExtensions = true;
 
     form.parse(req, async (err, fields, files) => {
@@ -83,7 +83,7 @@ export default async function handler(req, res) {
     });
   } else if (req.method === "PUT") {
     const form = new formidable.IncomingForm();
-    form.uploadDir = "/home/imgProducts";
+    form.uploadDir = "/img/imgProducts/";
     form.keepExtensions = true;
 
     form.parse(req, async (err, fields, files) => {
