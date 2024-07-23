@@ -1,5 +1,4 @@
 import mysql from "mysql2/promise";
-import bcrypt from "bcrypt";
 
 export default async function handler(req, res) {
   const { user, pass } = req.body;
@@ -24,7 +23,7 @@ export default async function handler(req, res) {
     }
 
     const userRecord = results[0];
-    const passwordMatch = await bcrypt.compare(pass, userRecord.pass);
+    const passwordMatch = await compare(pass, userRecord.pass);
 
     if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
