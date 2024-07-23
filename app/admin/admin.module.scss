@@ -1,0 +1,23 @@
+.loginSection{
+    @apply flex flex-col justify-center items-center min-h-[70vh] bg-[var(--color-main-light)];
+    form{
+        @apply flex flex-col justify-center items-center gap-5 mt-[15vh] border-[1px] border-black py-10 px-10 rounded-xl;
+        box-shadow: 0px 0px 30px 0px rgba($color: #000000, $alpha: 0.4);
+        h2{
+            @apply text-[var(--color-main)] font-bold text-2xl uppercase;
+        }
+        button{
+            @apply bg-[var(--color-darker)] text-white flex flex-row justify-center items-center gap-1 text-lg py-1 px-4 rounded-2xl;
+        }
+    }
+    .inputDiv{
+        @apply flex flex-row justify-center items-center text-white rounded-2xl py-1 px-5 bg-[var(--color-main)];
+
+        input{
+            @apply bg-transparent text-white pl-3 outline-none;
+        }
+        input::placeholder{
+            @apply text-white capitalize;
+        }
+    }
+}
