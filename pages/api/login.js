@@ -23,9 +23,9 @@ export default async function handler(req, res) {
     }
 
     const userRecord = results[0];
-    const passwordMatch = await compare(pass, userRecord.pass);
 
-    if (!passwordMatch) {
+    // Verificarea parolei fără bcrypt
+    if (pass !== userRecord.pass) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
