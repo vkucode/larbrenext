@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import styles from './add.module.scss';
+import styles from '../general.module.scss'
 
 export default function AddProduct() {
   const [nume, setNume] = useState('');
