@@ -5,9 +5,9 @@ import styles from '../general.module.scss';
 
 export default function AddProduct() {
   const [nume_ar, setNumeAr] = useState('');
-  const [nume_fr, setNumeFR] = useState('');
+  const [nume, setNumeFR] = useState('');
   const [descriere_ar, setDescriereAR] = useState('');
-  const [descriere_fr, setDescriereFR] = useState('');
+  const [descriere, setDescriereFR] = useState('');
   const [tip, setTip] = useState('');
   const [categorie, setCategorie] = useState('');
   const [imagine, setImagine] = useState(null);
@@ -23,16 +23,16 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!nume_ar || !nume_fr || !descriere_ar || !descriere_fr || !tip || !categorie || !imagine) {
+    if (!nume_ar || !nume || !descriere_ar || !descriere || !tip || !categorie || !imagine) {
       setMessage('Toate câmpurile trebuie completate.');
       return;
     }
 
     const formData = new FormData();
     formData.append('nume_ar', nume_ar);
-    formData.append('nume_fr', nume_fr);
+    formData.append('nume', nume);
     formData.append('descriere_ar', descriere_ar);
-    formData.append('descriere_fr', descriere_fr);
+    formData.append('descriere', descriere);
     formData.append('tip', tip);
     formData.append('categorie', categorie);
     formData.append('imagine', imagine);
@@ -62,7 +62,7 @@ export default function AddProduct() {
           <input
             type="text"
             placeholder="Nom de produit FR"
-            value={nume_fr}
+            value={nume}
             onChange={(e) => setNumeFR(e.target.value)}
             required
           />
@@ -77,7 +77,7 @@ export default function AddProduct() {
         <div>
           <textarea
             placeholder="Description FR"
-            value={descriere_fr}
+            value={descriere}
             onChange={(e) => setDescriereFR(e.target.value)}
             required
           />

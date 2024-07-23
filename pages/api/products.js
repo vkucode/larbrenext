@@ -47,15 +47,14 @@ export default async function handler(req, res) {
         return res.status(500).json({ message: err.message });
       }
 
-      const { nume_ar, nume_fr, descriere_ar, descriere_fr, tip, categorie } =
-        fields;
+      const { nume_ar, nume, descriere_ar, descriere, tip, categorie } = fields;
       const imagine = files.imagine ? path.basename(files.imagine.path) : null;
 
       if (
         !nume_ar ||
-        !nume_fr ||
+        !nume ||
         !descriere_ar ||
-        !descriere_fr ||
+        !descriere ||
         !tip ||
         !categorie ||
         !imagine
@@ -67,12 +66,12 @@ export default async function handler(req, res) {
 
       try {
         const query =
-          "INSERT INTO produits (nume_produs_ar, nume_produs_fr, descriere_produs_ar, descriere_produs_fr, tip_produs, categoria_produs, imagine_produs) VALUES (?, ?, ?, ?, ?, ?, ?)";
+          "INSERT INTO produits (nume_produs_ar, nume_produs, descriere_produs_ar, descriere_produs, tip_produs, categoria_produs, imagine_produs) VALUES (?, ?, ?, ?, ?, ?, ?)";
         await dbconnection.execute(query, [
           nume_ar,
-          nume_fr,
+          nume,
           descriere_ar,
-          descriere_fr,
+          descriere,
           tip,
           categorie,
           imagine,
@@ -92,23 +91,16 @@ export default async function handler(req, res) {
         return res.status(500).json({ message: err.message });
       }
 
-      const {
-        id,
-        nume_ar,
-        nume_fr,
-        descriere_ar,
-        descriere_fr,
-        tip,
-        categorie,
-      } = fields;
+      const { id, nume_ar, nume, descriere_ar, descriere, tip, categorie } =
+        fields;
       const imagine = files.imagine ? path.basename(files.imagine.path) : null;
 
       if (
         !id ||
         !nume_ar ||
-        !nume_fr ||
+        !nume ||
         !descriere_ar ||
-        !descriere_fr ||
+        !descriere ||
         !tip ||
         !categorie
       ) {
@@ -119,12 +111,12 @@ export default async function handler(req, res) {
 
       try {
         const query =
-          "UPDATE produits SET nume_produs_ar = ?, nume_produs_fr = ?, descriere_produs_ar = ?, descriere_produs_fr = ?, tip_produs = ?, categoria_produs = ?, imagine_produs = ? WHERE id = ?";
+          "UPDATE produits SET nume_produs_ar = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?, imagine_produs = ? WHERE id = ?";
         await dbconnection.execute(query, [
           nume_ar,
-          nume_fr,
+          nume,
           descriere_ar,
-          descriere_fr,
+          descriere,
           tip,
           categorie,
           imagine,
