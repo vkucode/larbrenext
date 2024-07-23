@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import styles from './dashboard.module.scss';
+import styles from './general.module.scss';
 
 export default function Dashboard() {
   const [products, setProducts] = useState([]);
