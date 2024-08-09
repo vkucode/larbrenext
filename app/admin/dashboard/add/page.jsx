@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../general.module.scss';
 import { FaRegImage, FaFile  } from "react-icons/fa6";
+import { IoArrowBackOutline } from "react-icons/io5";
 
 export default function AddProduct() {
   const [nume_ar, setNumeAr] = useState('');
@@ -63,6 +64,9 @@ export default function AddProduct() {
 
   return (
     <section className={styles.addProduct}>
+      <div>
+        <a href='/admin/dashboard'><IoArrowBackOutline />&nbsp;Retour</a>
+      </div>
       <h1>Ajouter un produit</h1>
       <form onSubmit={handleSubmit}>
         <div>
