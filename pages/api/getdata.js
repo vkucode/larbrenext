@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     console.log("Database connection established");
 
     const query =
-      "SELECT id, tip_produs, categoria_produs, nume_produs, descriere_produs, imagine_produs, fiche_tech FROM produits";
+      "SELECT id, tip_produs, categoria_produs, nume_produs, nume_produs_ar, nume_produs_en, descriere_produs, descriere_produs_ar, descriere_produs_en, imagine_produs, fiche_tech FROM produits";
     const values = [];
     console.log("Executing query:", query);
     const [results] = await dbconnection.execute(query, values);
