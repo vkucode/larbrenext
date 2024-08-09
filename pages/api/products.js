@@ -47,17 +47,30 @@ export default async function handler(req, res) {
         return res.status(500).json({ message: err.message });
       }
 
-      const { nume_ar, nume, descriere_ar, descriere, tip, categorie } = fields;
+      const {
+        nume_ar,
+        nume_en,
+        nume,
+        descriere_ar,
+        descriere_en,
+        descriere,
+        tip,
+        categorie,
+      } = fields;
       const imagine = files.imagine ? path.basename(files.imagine.path) : null;
+      const fiche = files.fiche ? path.basename(files.fiche.path) : null;
 
       if (
         !nume_ar ||
+        !nume_en ||
         !nume ||
         !descriere_ar ||
+        !descriere_en ||
         !descriere ||
         !tip ||
         !categorie ||
-        !imagine
+        !imagine ||
+        !fiche
       ) {
         return res
           .status(400)
@@ -66,15 +79,18 @@ export default async function handler(req, res) {
 
       try {
         const query =
-          "INSERT INTO produits (nume_produs_ar, nume_produs, descriere_produs_ar, descriere_produs, tip_produs, categoria_produs, imagine_produs) VALUES (?, ?, ?, ?, ?, ?, ?)";
+          "INSERT INTO produits (nume_produs_ar, nume_produs_en, nume_produs, descriere_produs_ar, descriere_produs_en, descriere_produs, tip_produs, categoria_produs, imagine_produs, fiche_tech) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         await dbconnection.execute(query, [
           nume_ar,
+          nume_en,
           nume,
           descriere_ar,
+          descriere_en,
           descriere,
           tip,
           categorie,
           imagine,
+          fiche,
         ]);
         res.status(201).json({ message: "Product added" });
       } catch (error) {
@@ -91,18 +107,31 @@ export default async function handler(req, res) {
         return res.status(500).json({ message: err.message });
       }
 
-      const { id, nume_ar, nume, descriere_ar, descriere, tip, categorie } =
-        fields;
+      const {
+        id,
+        nume_ar,
+        nume_en,
+        nume,
+        descriere_ar,
+        descriere_en,
+        descriere,
+        tip,
+        categorie,
+      } = fields;
       const imagine = files.imagine ? path.basename(files.imagine.path) : null;
+      const fiche = files.fiche ? path.basename(files.fiche.path) : null;
 
       if (
-        !id ||
         !nume_ar ||
+        !nume_en ||
         !nume ||
         !descriere_ar ||
+        !descriere_en ||
         !descriere ||
         !tip ||
-        !categorie
+        !categorie ||
+        !imagine ||
+        !fiche
       ) {
         return res
           .status(400)
@@ -111,16 +140,18 @@ export default async function handler(req, res) {
 
       try {
         const query =
-          "UPDATE produits SET nume_produs_ar = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?, imagine_produs = ? WHERE id = ?";
+          "UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?, imagine_produs = ?, fiche_tech = ? WHERE id = ?";
         await dbconnection.execute(query, [
           nume_ar,
+          nume_en,
           nume,
           descriere_ar,
+          descriere_en,
           descriere,
           tip,
           categorie,
           imagine,
-          id,
+          fiche,
         ]);
         res.status(200).json({ message: "Product updated" });
       } catch (error) {
