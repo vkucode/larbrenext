@@ -1,11 +1,8 @@
 import mysql from "mysql2/promise";
-import formidable from "formidable";
-import fs from "fs";
-import path from "path";
 
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: true, // Permite utilizarea bodyParser pentru datele JSON
   },
 };
 
@@ -38,16 +35,40 @@ export default async function handler(req, res) {
       res.status(500).json({ message: error.message });
     }
   } else if (req.method === "POST") {
-    const form = new formidable.IncomingForm();
-    form.uploadDir = "/img/imgProducts/";
-    form.keepExtensions = true;
+    const {
+      nume_ar,
+      nume_en,
+      nume,
+      descriere_ar,
+      descriere_en,
+      descriere,
+      tip,
+      categorie,
+      imagine,
+      fiche,
+    } = req.body;
 
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        return res.status(500).json({ message: err.message });
-      }
+    if (
+      !nume_ar ||
+      !nume_en ||
+      !nume ||
+      !descriere_ar ||
+      !descriere_en ||
+      !descriere ||
+      !tip ||
+      !categorie ||
+      !imagine ||
+      !fiche
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Toate câmpurile trebuie completate." });
+    }
 
-      const {
+    try {
+      const query =
+        "INSERT INTO produits (nume_produs_ar, nume_produs_en, nume_produs, descriere_produs_ar, descriere_produs_en, descriere_produs, tip_produs, categoria_produs, imagine_produs, fiche_tech) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      await dbconnection.execute(query, [
         nume_ar,
         nume_en,
         nume,
@@ -56,59 +77,49 @@ export default async function handler(req, res) {
         descriere,
         tip,
         categorie,
-      } = fields;
-      const imagine = files.imagine ? path.basename(files.imagine.path) : null;
-      const fiche = files.fiche ? path.basename(files.fiche.path) : null;
-
-      if (
-        !nume_ar ||
-        !nume_en ||
-        !nume ||
-        !descriere_ar ||
-        !descriere_en ||
-        !descriere ||
-        !tip ||
-        !categorie ||
-        !imagine ||
-        !fiche
-      ) {
-        return res
-          .status(400)
-          .json({ message: "Toate câmpurile trebuie completate." });
-      }
-
-      try {
-        const query =
-          "INSERT INTO produits (nume_produs_ar, nume_produs_en, nume_produs, descriere_produs_ar, descriere_produs_en, descriere_produs, tip_produs, categoria_produs, imagine_produs, fiche_tech) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        await dbconnection.execute(query, [
-          nume_ar,
-          nume_en,
-          nume,
-          descriere_ar,
-          descriere_en,
-          descriere,
-          tip,
-          categorie,
-          imagine,
-          fiche,
-        ]);
-        res.status(201).json({ message: "Product added" });
-      } catch (error) {
-        res.status(500).json({ message: error.message });
-      }
-    });
+        imagine,
+        fiche,
+      ]);
+      res.status(201).json({ message: "Product added" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   } else if (req.method === "PUT") {
-    const form = new formidable.IncomingForm();
-    form.uploadDir = "/img/imgProducts/";
-    form.keepExtensions = true;
+    const {
+      id,
+      nume_ar,
+      nume_en,
+      nume,
+      descriere_ar,
+      descriere_en,
+      descriere,
+      tip,
+      categorie,
+      imagine,
+      fiche,
+    } = req.body;
 
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        return res.status(500).json({ message: err.message });
-      }
+    if (
+      !nume_ar ||
+      !nume_en ||
+      !nume ||
+      !descriere_ar ||
+      !descriere_en ||
+      !descriere ||
+      !tip ||
+      !categorie ||
+      !imagine ||
+      !fiche
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Toate câmpurile trebuie completate." });
+    }
 
-      const {
-        id,
+    try {
+      const query =
+        "UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?, imagine_produs = ?, fiche_tech = ? WHERE id = ?";
+      await dbconnection.execute(query, [
         nume_ar,
         nume_en,
         nume,
@@ -117,70 +128,30 @@ export default async function handler(req, res) {
         descriere,
         tip,
         categorie,
-      } = fields;
-      const imagine = files.imagine ? path.basename(files.imagine.path) : null;
-      const fiche = files.fiche ? path.basename(files.fiche.path) : null;
-
-      if (
-        !nume_ar ||
-        !nume_en ||
-        !nume ||
-        !descriere_ar ||
-        !descriere_en ||
-        !descriere ||
-        !tip ||
-        !categorie ||
-        !imagine ||
-        !fiche
-      ) {
-        return res
-          .status(400)
-          .json({ message: "Toate câmpurile trebuie completate." });
-      }
-
-      try {
-        const query =
-          "UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?, imagine_produs = ?, fiche_tech = ? WHERE id = ?";
-        await dbconnection.execute(query, [
-          nume_ar,
-          nume_en,
-          nume,
-          descriere_ar,
-          descriere_en,
-          descriere,
-          tip,
-          categorie,
-          imagine,
-          fiche,
-        ]);
-        res.status(200).json({ message: "Product updated" });
-      } catch (error) {
-        res.status(500).json({ message: error.message });
-      }
-    });
+        imagine,
+        fiche,
+        id,
+      ]);
+      res.status(200).json({ message: "Product updated" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   } else if (req.method === "DELETE") {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async (err, fields) => {
-      if (err) {
-        return res.status(500).json({ message: err.message });
-      }
+    const { id } = req.body;
 
-      const { id } = fields;
+    if (!id) {
+      return res
+        .status(400)
+        .json({ message: "ID-ul produsului este necesar." });
+    }
 
-      if (!id) {
-        return res
-          .status(400)
-          .json({ message: "ID-ul produsului este necesar." });
-      }
-
-      try {
-        const query = "DELETE FROM produits WHERE id = ?";
-        await dbconnection.execute(query, [id]);
-        res.status(200).json({ message: "Product deleted" });
-      } catch (error) {
-        res.status(500).json({ message: error.message });
-      }
-    });
+    try {
+      const query = "DELETE FROM produits WHERE id = ?";
+      await dbconnection.execute(query, [id]);
+      res.status(200).json({ message: "Product deleted" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   }
 
   await dbconnection.end();

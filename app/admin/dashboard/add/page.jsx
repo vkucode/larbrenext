@@ -14,8 +14,8 @@ export default function AddProduct() {
   const [descriere, setDescriereFR] = useState('');
   const [tip, setTip] = useState('');
   const [categorie, setCategorie] = useState('');
-  const [imagine, setImagine] = useState(null);
-  const [fiche, setFiche] = useState(null);
+  const [imagine, setImagine] = useState('');
+  const [fiche, setFiche] = useState('');
   const [message, setMessage] = useState('');
   const router = useRouter();
 
@@ -33,22 +33,26 @@ export default function AddProduct() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('nume_ar', nume_ar);
-    formData.append('nume_en', nume_en);
-    formData.append('nume', nume);
-    formData.append('descriere_ar', descriere_ar);
-    formData.append('descriere_en', descriere_en);
-    formData.append('descriere', descriere);
-    formData.append('tip', tip);
-    formData.append('categorie', categorie);
-    formData.append('imagine', imagine);
-    formData.append('fiche', fiche);
+    const formData = {
+      nume_ar,
+      nume_en,
+      nume,
+      descriere_ar,
+      descriere_en,
+      descriere,
+      tip,
+      categorie,
+      imagine,
+      fiche,
+    };
 
     try {
       const response = await fetch('https://larbreapains.fr/api/products', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -59,6 +63,13 @@ export default function AddProduct() {
       }
     } catch (error) {
       setMessage('A apărut o eroare neașteptată.');
+    }
+  };
+
+  const handleFileChange = (e, setter) => {
+    const file = e.target.files[0];
+    if (file) {
+      setter(file.name);
     }
   };
 
@@ -133,21 +144,20 @@ export default function AddProduct() {
             id='imageProd'
             type="file"
             placeholder="Image de produit"
-            onChange={(e) => setImagine(e.target.files[0])}
+            onChange={(e) => handleFileChange(e, setImagine)}
             required
           />
         </section>
         <section className='flex flex-col justify-center items-center mt-5 mb-5'>
-          <label htmlFor='#imageProd' className='flex flex-row justify-center items-center'>Fiche technique&nbsp;<FaFile /></label>
+          <label htmlFor='#ficheProd' className='flex flex-row justify-center items-center'>Fiche technique&nbsp;<FaFile /></label>
           <input
             id='ficheProd'
             type="file"
             placeholder="Fiche de produit"
-            onChange={(e) => setFiche(e.target.files[0])}
+            onChange={(e) => handleFileChange(e, setFiche)}
             required
           />
         </section>
-
 
         <button type="submit">Ajouter le produit</button>
         {message && <p className={styles.message}>{message}</p>}
