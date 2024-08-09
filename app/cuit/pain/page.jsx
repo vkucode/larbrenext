@@ -79,6 +79,7 @@ export default function Pain() {
               <button onClick={handleClosePopup} className={styles.closeButton}><HiXMark /></button>
               <h1>{selectedProduct.nume_produs}</h1>
               <p>{selectedProduct.descriere_produs}</p>
+              <a href={`https://larbreapains.fr/ficheTechnique/${selectedProduct.fiche_tech}`}>Fiche technique</a>
             </div>
             
 
