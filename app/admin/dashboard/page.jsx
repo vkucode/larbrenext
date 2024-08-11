@@ -23,6 +23,28 @@ export default function Dashboard() {
     fetchProducts();
   }, []);
 
+  const deleteProduct = async (id) => {
+    const confirmed = confirm('Est-ce que vous êtes sûr de vouloir supprimer ce produit?');
+    if (confirmed) {
+      try {
+        const response = await fetch(`https://larbreapains.fr/api/products/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          setProducts(products.filter(product => product.id !== id));
+        } else {
+          console.error('Failed to delete product');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  };
+
   return (
     <section className={styles.dashboard}>
       <div className='flex flex-row justify-between items-center w-full max-w-6xl'>
@@ -34,11 +56,11 @@ export default function Dashboard() {
           <div key={product.id} className={styles.productItem}>
             <h1>{product.nume_produs}</h1>
             <Image src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}`} alt={product.nume_produs} width={150} height={150} />
-              <div className={styles.controlBtns}>
-                <Link href={`/admin/dashboard/edit/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
-                <Link href={`/admin/dashboard/delete/${product.id}`}><button>Delete&nbsp;<TbTrash /></button></Link>
-              </div>
+            <div className={styles.controlBtns}>
+              <Link href={`/admin/dashboard/edit/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
+              <button onClick={() => deleteProduct(product.id)}>Delete&nbsp;<TbTrash /></button>
             </div>
+          </div>
         ))}
       </div>
     </section>
