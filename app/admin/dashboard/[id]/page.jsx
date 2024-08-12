@@ -77,88 +77,100 @@ export default function EditProductPage() {
   if (!product) return <div>Loading...</div>;
 
   return (
-    <section className={styles.dashboard}>
-      <h1>Edit Product: {product.nume_produs}</h1>
+    <section className={styles.editProduct}>
+      <h1>Editer le produit: {product.nume_produs}</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div>
-          <label>Nume (AR):</label>
-          <input
-            type="text"
-            name="nume_ar"
-            value={formData.nume_ar}
-            onChange={handleInputChange}
-            required
-          />
+            <div>
+            <label>Nom AR:</label>
+            <input
+                type="text"
+                name="nume_ar"
+                value={formData.nume_ar}
+                onChange={handleInputChange}
+                required
+            />
+            </div>
+            <div>
+            <label>Nom EN:</label>
+            <input
+                type="text"
+                name="nume_en"
+                value={formData.nume_en}
+                onChange={handleInputChange}
+                required
+            />
+            </div>
+            <div>
+            <label>Nom FR:</label>
+            <input
+                type="text"
+                name="nume"
+                value={formData.nume}
+                onChange={handleInputChange}
+                required
+            />
+            </div>
+
+
         </div>
         <div>
-          <label>Nume (EN):</label>
-          <input
-            type="text"
-            name="nume_en"
-            value={formData.nume_en}
-            onChange={handleInputChange}
-            required
-          />
+            <div>
+            <label>Description AR:</label>
+            <input
+                type="text"
+                name="descriere_ar"
+                value={formData.descriere_ar}
+                onChange={handleInputChange}
+                required
+            />
+            </div>
+            <div>
+            <label>Description EN:</label>
+            <input
+                type="text"
+                name="descriere_en"
+                value={formData.descriere_en}
+                onChange={handleInputChange}
+                required
+            />
+            </div>
+            <div>
+            <label>Description FR:</label>
+            <input
+                type="text"
+                name="descriere"
+                value={formData.descriere}
+                onChange={handleInputChange}
+                required
+            />
+            </div>
         </div>
         <div>
-          <label>Nume:</label>
-          <input
-            type="text"
-            name="nume"
-            value={formData.nume}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Descriere (AR):</label>
-          <input
-            type="text"
-            name="descriere_ar"
-            value={formData.descriere_ar}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Descriere (EN):</label>
-          <input
-            type="text"
-            name="descriere_en"
-            value={formData.descriere_en}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Descriere:</label>
-          <input
-            type="text"
-            name="descriere"
-            value={formData.descriere}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Tip:</label>
-          <input
-            type="text"
-            name="tip"
-            value={formData.tip}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div>
+            <div>
+            <label>Tip:</label>
+                <input
+                    type="text"
+                    name="tip"
+                    value={formData.tip}
+                    onChange={handleInputChange}
+                    required
+                />
+            </div>
+          <div>
           <label>Categorie:</label>
-          <input
-            type="text"
-            name="categorie"
-            value={formData.categorie}
-            onChange={handleInputChange}
-            required
-          />
+            <input
+                type="text"
+                name="categorie"
+                value={formData.categorie}
+                onChange={handleInputChange}
+                required
+            />
+          </div>
+        
+        </div>
+        <div>
+
         </div>
         <div>
           <label>Imagine:</label>

@@ -57,7 +57,7 @@ export default function Dashboard() {
             <h1>{product.nume_produs}</h1>
             <Image src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}`} alt={product.nume_produs} width={150} height={150} />
             <div className={styles.controlBtns}>
-              <Link href={`/admin/dashboard/edit/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
+              <Link href={`/admin/dashboard/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
               <button onClick={() => deleteProduct(product.id)}>Delete&nbsp;<TbTrash /></button>
             </div>
           </div>
