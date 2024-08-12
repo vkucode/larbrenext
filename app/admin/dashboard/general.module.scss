@@ -62,11 +62,11 @@
 }
 
 .editProduct{
-    @apply flex flex-col min-h-[70vh] justify-center bg-[var(--color-main-light)] items-center pt-[150px];
+    @apply flex flex-col min-h-[70vh] w-full justify-center bg-[var(--color-main-light)] items-center pt-[150px];
     div{
         @apply w-full max-w-4xl justify-start items-start;
         a{
-            @apply text-left flex flex-row justify-center items-center w-[120px] rounded-xl py-1 bg-[var(--color-darker)] text-[var(--color-main-light)] mb-5;
+            @apply text-left flex flex-row justify-center items-center ml-[50px] w-[120px] rounded-xl py-1 bg-[var(--color-darker)] text-[var(--color-main-light)] mb-10;
         }
     }
 
@@ -76,17 +76,35 @@
     }
     form{
         @apply flex flex-col justify-center items-center max-w-5xl gap-2;
+        label{
+            @apply text-lg font-bold;
+            font-family: 'Quattrocento';
+        }
         div{
-            @apply relative flex flex-row justify-center w-full items-center gap-2 text-center;
+            @apply relative flex flex-row justify-center w-full mt-2 items-center gap-2 text-center;
             div{
                 @apply relative flex flex-col justify-center items-start;
+            }
+        }
+
+        section{
+            @apply flex flex-col w-full justify-center items-start gap-4 mt-5;
+            div{
+                @apply flex flex-row justify-center items-center;
+                img{
+                    @apply w-full max-w-[250px] rounded-lg;
+                }
+                a{
+                    @apply py-2 mb-0 ml-0 px-5 w-full max-w-[300px];
+                }
+
             }
         }
         input, textarea, select{
             @apply relative outline-none py-2 px-5 w-full rounded-xl;
         }
         button{
-            @apply py-2 px-5 bg-[var(--color-darker)] rounded-xl text-[var(--color-main-light)];
+            @apply py-2 px-5 my-10 bg-[var(--color-darker)] rounded-xl text-[var(--color-main-light)];
         }
     }
 }
