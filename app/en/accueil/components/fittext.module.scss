@@ -1,0 +1,26 @@
+/* ANIMATION FIT TEXT SCREEEN*/
+.textFull{
+    @apply bottom-0 left-0 right-0 z-0 whitespace-nowrap text-center uppercase bg-transparent;
+}
+  .containerText{
+    @apply w-screen overflow-hidden bg-transparent; 
+  }
+  .textScroll {
+    @apply flex flex-row justify-center items-center gap-10 md:text-[110px] text-4xl md:py-7 py-4;
+    p{
+        color: var(--color-dark);
+        letter-spacing: 4px;
+        font-family: 'Quattrocento';
+        width: 100%;
+        animation: scrollLeft 35s linear infinite;
+    }
+  }
+
+  @keyframes scrollLeft {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }

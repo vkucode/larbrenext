@@ -88,7 +88,7 @@ const NavRight = () => {
         Nous Contacter
       </motion.button>
       </a>
-      <a href="/en/accueil" className="text-2xl fi fi-sh"></a>
+      <a href="/fr/accueil" className="text-2xl fi fi-fr"></a>
       <a href="/ar/accueil" className="text-2xl fi fi-ae"></a>
     </div>
   );
@@ -113,7 +113,7 @@ const NavMenu = ({ isOpen }) => {
 const NavMobileFlags = () => {
   return (
     <div className="flex flex-row gap-5 justify-center items-center lg:hidden">
-      <a href="/en/accueil" className="text-2xl fi fi-sh"></a>
+      <a href="/fr/accueil" className="text-2xl fi fi-fr"></a>
       <a href="/ar/accueil" className="text-2xl fi fi-ae"></a>
     </div>
   );

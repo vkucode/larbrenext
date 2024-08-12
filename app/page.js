@@ -1,4 +1,4 @@
-import AccueilPage from "./accueil/page";
+import AccueilPage from "./fr/accueil/page";
 export default function Home() {
   return (
     <>

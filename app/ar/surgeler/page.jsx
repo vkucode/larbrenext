@@ -1,0 +1,49 @@
+'use client';
+import { useEffect, useState } from "react";
+import styles from './surgeler.module.scss'
+import Image from "next/image";
+import { FaChevronRight } from "react-icons/fa6";
+import 'animate.css'
+
+export default function Surgeler() {
+  const [hoveredItem, setHoveredItem] = useState(null)
+
+  return (
+    <>
+      <section className={styles.sectionPage}>
+        <a href="/ar/surgeler/pain"
+          onMouseEnter={() => setHoveredItem(1)}
+          onMouseLeave={() => setHoveredItem(null)}
+        >
+            <div className="absolute w-full h-full z-10 bg-black bg-opacity-50"></div>
+            <Image src="/img/categories/img5.jpg" width={1000} height={1000} alt="pain" />
+            <Image src="/img/logo.png" className={styles.logoCat} width={200} height={200} alt="logo" />
+            <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 1 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
+            <h1>خبز</h1>
+        </a>
+        <a href="/ar/surgeler/patisserie"
+        onMouseEnter={() => setHoveredItem(2)}
+        onMouseLeave={() => setHoveredItem(null)}
+        >
+          <div className="absolute w-full h-full z-10 bg-black bg-opacity-50"></div>
+          <Image src="/img/categories/img2.jpg" width={1000} height={1000} alt="pain" />
+          <Image src="/img/logo.png" className={styles.logoCat} width={200} height={200} alt="logo" />
+          <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 2 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
+          <h1>متجر المعجنات</h1>
+        </a>
+        <a href="/ar/surgeler/viennoiserie"
+        onMouseEnter={() => setHoveredItem(3)}
+        onMouseLeave={() => setHoveredItem(null)}
+        >
+          <div className="absolute w-full h-full z-10 bg-black bg-opacity-50"></div>
+          <Image src="/img/categories/img4.jpg" width={1000} height={1000} alt="pain" />
+          <Image src="/img/logo.png" className={styles.logoCat} width={200} height={200} alt="logo" />
+          <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 3 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
+          <h1>معجنات</h1>
+        </a>
+
+      </section>
+    </>
+
+  );
+}

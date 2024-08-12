@@ -1,0 +1,29 @@
+/* ANIMATION FIT TEXT SCREEEN*/
+
+  .containerText{
+    @apply mt-10 lg:mt-28 scale-110 -rotate-3; 
+    width: 100vw;
+    background: var(--color-darker)
+  }
+  .textScroll {
+    @apply flex flex-row justify-center scale-110 items-center gap-10 text-4xl md:py-4 py-4;
+    img{
+        @apply min-w-[50px] lg:w-[130px];
+    }
+    p{
+        opacity: 1;
+        letter-spacing: 4px;
+        font-family: 'Quattrocento';
+        width: 100px;
+        animation: scrollLeft 55s linear infinite;
+    }
+  }
+
+  @keyframes scrollLeft {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(-350%);
+    }
+  }

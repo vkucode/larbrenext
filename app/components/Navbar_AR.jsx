@@ -30,11 +30,9 @@ const FlipNav = () => {
   );
 };
 
-
-
 const Logo = () => {
   return (
-    <Link href='/fr/accueil' className="absolute left-[50%] translate-x-[-50%] top-[0%] z-10 text-4xl font-black text-white md:absolute md:left-[50%] md:-translate-x-[50%]">
+    <Link href='/' className="absolute left-[50%] translate-x-[-50%] top-[0%] z-10 text-4xl font-black text-white md:absolute md:left-[50%] md:-translate-x-[50%]">
     <Image src="/img/logoFond.png" alt="Pizzalif" width={90} height={90} />
   </Link>
   );
@@ -52,9 +50,9 @@ const NavLeft = ({ setIsOpen }) => {
         <FiMenu />
       </motion.button>
       <Logo />
-      <NavLink text="Cuit" linksite="/fr/cuit" />
-      <NavLink text="Surgeler" linksite="/fr/surgeler" />
-      <NavLink text="Traiteur" linksite="/fr/traiteur" />
+      <NavLink text="مطبوخ" linksite="/ar/cuit" />
+      <NavLink text="تجميد" linksite="/ar/surgeler" />
+      <NavLink text="تقديم الطعام" linksite="/ar/traiteur" />
     </div>
   );
 };
@@ -79,17 +77,17 @@ const NavLink = ({ text, linksite }) => {
 const NavRight = () => {
   return (
     <div className="hidden lg:flex items-center gap-4">
-       <a href="/fr/accueil#contact">
+       <a href="/ar/accueil#contact">
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className="px-4 py-2 bg-gradient-to-r flex flex-row justify-center items-center from-amber-800 to-amber-950 text-white font-medium rounded-md whitespace-nowrap"
       >
-        Nous Contacter
+        اتصل بنا
       </motion.button>
       </a>
       <a href="/en/accueil" className="text-2xl fi fi-sh"></a>
-      <a href="/ar/accueil" className="text-2xl fi fi-ae"></a>
+      <a href="/fr/accueil" className="text-2xl fi fi-fr"></a>
     </div>
   );
 };
@@ -102,10 +100,10 @@ const NavMenu = ({ isOpen }) => {
       animate={isOpen ? "open" : "closed"}
       className={`${styles.navBar} absolute py-3 shadow-lg left-0 right-0 top-full origin-top flex flex-col gap-3`}
     >
-      <MenuLink text="Cuit" linksite="/fr/cuit" />
-      <MenuLink text="Surgeler" linksite="/fr/surgeler" />
-      <MenuLink text="Traiteur" linksite="/fr/traiteur" />
-      <MenuLink text="Nous Contacter" linksite="/fr/#contact" />
+      <MenuLink text="مطبوخ" linksite="/ar/cuit" />
+      <MenuLink text="تجميد" linksite="/ar/surgeler" />
+      <MenuLink text="تقديم الطعام" linksite="/ar/traiteur" />
+      <MenuLink text="اتصل بنا" linksite="/ar/#contact" />
     </motion.div>
   );
 };
@@ -114,7 +112,7 @@ const NavMobileFlags = () => {
   return (
     <div className="flex flex-row gap-5 justify-center items-center lg:hidden">
       <a href="/en/accueil" className="text-2xl fi fi-sh"></a>
-      <a href="/ar/accueil" className="text-2xl fi fi-ae"></a>
+      <a href="/fr/accueil" className="text-2xl fi fi-fr"></a>
     </div>
   );
 };
