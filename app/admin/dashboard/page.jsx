@@ -27,7 +27,7 @@ export default function Dashboard() {
     const confirmed = confirm('Est-ce que vous êtes sûr de vouloir supprimer ce produit?');
     if (confirmed) {
       try {
-        const response = await fetch(`https://larbreapains.fr/api/products/${id}`, {
+        const response = await fetch(`https://larbreapains.fr/api/delete?id=${id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

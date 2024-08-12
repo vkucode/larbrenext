@@ -61,6 +61,8 @@
     }
 }
 
+// -------------------------------------------------------------------------------
+
 .editProduct{
     @apply flex flex-col min-h-[70vh] w-full justify-center bg-[var(--color-main-light)] items-center pt-[150px];
     div{
@@ -108,3 +110,5 @@
         }
     }
 }
+
+// Remove section
