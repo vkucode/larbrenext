@@ -44,7 +44,7 @@
     .catalogProducts{
         @apply flex flex-wrap mt-10 pb-14 flex-row justify-center items-center gap-5 max-w-7xl;
         .productCard{
-            @apply relative w-[150px] h-[200px] lg:w-[300px] lg:h-[350px] transition-all duration-300;
+            @apply relative cursor-pointer w-[150px] h-[200px] lg:w-[300px] lg:h-[350px] transition-all duration-300;
             img{
                 @apply absolute w-full h-full object-cover;
             }
@@ -53,6 +53,44 @@
                 font-family: 'Quattrocento';
                 box-shadow: 0px 0px 30px 0px rgba($color: #000000, $alpha: 1);
                 color: var(--color-main-light);
+            }
+        }
+    }
+    .popup{
+        @apply fixed z-30 bg-black bg-opacity-15 top-[0px] left-0 w-screen h-dvh flex flex-col justify-center items-center;
+        .popupContent{
+            @apply flex flex-col md:flex-row justify-center items-center w-full max-w-5xl min-h-[55vh];
+            .popupLogo {
+                @apply absolute w-[150px] z-40 hidden md:block;
+            }
+            .popupImg{
+                @apply relative w-full h-full flex flex-col justify-center;
+                background: var(--color-main-light);
+                img{
+                    @apply mix-blend-normal absolute w-full h-full object-cover;
+                }
+                .closeButtonMb{
+                    @apply absolute block md:hidden text-[var(--color-main-light)] top-[10px] right-[20px] text-4xl;
+                }
+            }
+            .popupText{
+                @apply w-full relative py-5 flex flex-col text-center justify-center items-center h-full;
+                color: var(--color-main-light);
+                background: var(--color-darker);
+                h1{
+                    @apply uppercase text-3xl w-full max-w-[380px];
+                    font-family: 'Quattrocento';
+                }
+                                p{
+                    @apply max-w-[350px] w-full mt-5;
+                    font-family: 'Quattrocento';
+                }
+                a{
+                    @apply text-xl mt-5 uppercase border-b-[var(--color-main-light)] border-b-[1px];
+                }
+                button{
+                    @apply absolute hidden md:block text-[var(--color-darker)] md:text-[var(--color-main-light)] text-4xl top-[10px] right-[10px] hover:rotate-180 transition-all ease-in-out duration-300;
+                }
             }
         }
     }
