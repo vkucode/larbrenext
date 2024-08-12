@@ -11,7 +11,7 @@ export default function Cuit() {
   return (
     <>
       <section className={styles.sectionPage}>
-        <a href="/cuit/pain"
+        <a href="/fr/cuit/pain"
           onMouseEnter={() => setHoveredItem(1)}
           onMouseLeave={() => setHoveredItem(null)}
         >
@@ -21,7 +21,7 @@ export default function Cuit() {
             <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 1 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
             <h1>Pain</h1>
         </a>
-        <a href="/cuit/patisserie"
+        <a href="/fr/cuit/patisserie"
         onMouseEnter={() => setHoveredItem(2)}
         onMouseLeave={() => setHoveredItem(null)}
         >
@@ -31,7 +31,7 @@ export default function Cuit() {
           <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 2 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
           <h1>Patisserie</h1>
         </a>
-        <a href="/cuit/viennoiserie"
+        <a href="/fr/cuit/viennoiserie"
         onMouseEnter={() => setHoveredItem(3)}
         onMouseLeave={() => setHoveredItem(null)}
         >

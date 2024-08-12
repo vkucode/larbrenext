@@ -11,7 +11,7 @@ export default function Surgeler() {
   return (
     <>
       <section className={styles.sectionPage}>
-        <a href="/surgeler/pain"
+        <a href="/fr/surgeler/pain"
           onMouseEnter={() => setHoveredItem(1)}
           onMouseLeave={() => setHoveredItem(null)}
         >
@@ -21,7 +21,7 @@ export default function Surgeler() {
             <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 1 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
             <h1>Pain</h1>
         </a>
-        <a href="/surgeler/patisserie"
+        <a href="/fr/surgeler/patisserie"
         onMouseEnter={() => setHoveredItem(2)}
         onMouseLeave={() => setHoveredItem(null)}
         >
@@ -31,7 +31,7 @@ export default function Surgeler() {
           <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 2 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
           <h1>Patisserie</h1>
         </a>
-        <a href="/surgeler/viennoiserie"
+        <a href="/fr/surgeler/viennoiserie"
         onMouseEnter={() => setHoveredItem(3)}
         onMouseLeave={() => setHoveredItem(null)}
         >

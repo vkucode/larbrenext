@@ -11,7 +11,7 @@ export default function Traiteur() {
   return (
     <>
       <section className={styles.sectionPage}>
-        <a href="/traiteur/salade"
+        <a href="/fr/traiteur/salade"
           onMouseEnter={() => setHoveredItem(1)}
           onMouseLeave={() => setHoveredItem(null)}
         >
@@ -21,7 +21,7 @@ export default function Traiteur() {
             <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 1 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
             <h1>Salade</h1>
         </a>
-        <a href="/traiteur/sandwich"
+        <a href="/fr/traiteur/sandwich"
         onMouseEnter={() => setHoveredItem(2)}
         onMouseLeave={() => setHoveredItem(null)}
         >
@@ -31,7 +31,7 @@ export default function Traiteur() {
           <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 2 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
           <h1>Sandwich</h1>
         </a>
-        <a href="/traiteur/quiche"
+        <a href="/fr/traiteur/quiche"
         onMouseEnter={() => setHoveredItem(3)}
         onMouseLeave={() => setHoveredItem(null)}
         >

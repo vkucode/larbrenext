@@ -34,7 +34,7 @@ const FlipNav = () => {
 
 const Logo = () => {
   return (
-    <Link href='/fr/accueil' className="absolute left-[50%] translate-x-[-50%] top-[0%] z-10 text-4xl font-black text-white md:absolute md:left-[50%] md:-translate-x-[50%]">
+    <Link href='/en/accueil' className="absolute left-[50%] translate-x-[-50%] top-[0%] z-10 text-4xl font-black text-white md:absolute md:left-[50%] md:-translate-x-[50%]">
     <Image src="/img/logoFond.png" alt="Pizzalif" width={90} height={90} />
   </Link>
   );
@@ -52,9 +52,9 @@ const NavLeft = ({ setIsOpen }) => {
         <FiMenu />
       </motion.button>
       <Logo />
-      <NavLink text="Cuit" linksite="/fr/cuit" />
-      <NavLink text="Surgeler" linksite="/fr/surgeler" />
-      <NavLink text="Traiteur" linksite="/fr/traiteur" />
+      <NavLink text="Cuit" linksite="/en/cuit" />
+      <NavLink text="Surgeler" linksite="/en/surgeler" />
+      <NavLink text="Traiteur" linksite="/en/traiteur" />
     </div>
   );
 };
@@ -79,7 +79,7 @@ const NavLink = ({ text, linksite }) => {
 const NavRight = () => {
   return (
     <div className="hidden lg:flex items-center gap-4">
-       <a href="/fr/accueil#contact">
+       <a href="/en/accueil#contact">
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -102,10 +102,10 @@ const NavMenu = ({ isOpen }) => {
       animate={isOpen ? "open" : "closed"}
       className={`${styles.navBar} absolute py-3 shadow-lg left-0 right-0 top-full origin-top flex flex-col gap-3`}
     >
-      <MenuLink text="Cuit" linksite="/fr/cuit" />
-      <MenuLink text="Surgeler" linksite="/fr/surgeler" />
-      <MenuLink text="Traiteur" linksite="/fr/traiteur" />
-      <MenuLink text="Nous Contacter" linksite="/fr/#contact" />
+      <MenuLink text="Cuit" linksite="/en/cuit" />
+      <MenuLink text="Surgeler" linksite="/en/surgeler" />
+      <MenuLink text="Traiteur" linksite="/en/traiteur" />
+      <MenuLink text="Nous Contacter" linksite="/en/#contact" />
     </motion.div>
   );
 };
