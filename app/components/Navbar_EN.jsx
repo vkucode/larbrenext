@@ -30,8 +30,6 @@ const FlipNav = () => {
   );
 };
 
-
-
 const Logo = () => {
   return (
     <Link href='/en/accueil' className="absolute left-[50%] translate-x-[-50%] top-[0%] z-10 text-4xl font-black text-white md:absolute md:left-[50%] md:-translate-x-[50%]">
@@ -52,9 +50,9 @@ const NavLeft = ({ setIsOpen }) => {
         <FiMenu />
       </motion.button>
       <Logo />
-      <NavLink text="Cuit" linksite="/en/cuit" />
-      <NavLink text="Surgeler" linksite="/en/surgeler" />
-      <NavLink text="Traiteur" linksite="/en/traiteur" />
+      <NavLink text="Baked" linksite="/en/cuit" />
+      <NavLink text="Frozen" linksite="/en/surgeler" />
+      <NavLink text="Catering" linksite="/en/traiteur" />
     </div>
   );
 };
@@ -85,7 +83,7 @@ const NavRight = () => {
         whileTap={{ scale: 0.95 }}
         className="px-4 py-2 bg-gradient-to-r flex flex-row justify-center items-center from-amber-800 to-amber-950 text-white font-medium rounded-md whitespace-nowrap"
       >
-        Nous Contacter
+        Contact Us
       </motion.button>
       </a>
       <a href="/fr/accueil" className="text-2xl fi fi-fr"></a>
@@ -102,10 +100,10 @@ const NavMenu = ({ isOpen }) => {
       animate={isOpen ? "open" : "closed"}
       className={`${styles.navBar} absolute py-3 shadow-lg left-0 right-0 top-full origin-top flex flex-col gap-3`}
     >
-      <MenuLink text="Cuit" linksite="/en/cuit" />
-      <MenuLink text="Surgeler" linksite="/en/surgeler" />
-      <MenuLink text="Traiteur" linksite="/en/traiteur" />
-      <MenuLink text="Nous Contacter" linksite="/en/#contact" />
+      <MenuLink text="Baked" linksite="/en/cuit" />
+      <MenuLink text="Frozen" linksite="/en/surgeler" />
+      <MenuLink text="Catering" linksite="/en/traiteur" />
+      <MenuLink text="Contact Us" linksite="/en/#contact" />
     </motion.div>
   );
 };

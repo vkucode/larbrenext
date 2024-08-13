@@ -30,9 +30,11 @@ const FlipNav = () => {
   );
 };
 
+
+
 const Logo = () => {
   return (
-    <Link href='/' className="absolute left-[50%] translate-x-[-50%] top-[0%] z-10 text-4xl font-black text-white md:absolute md:left-[50%] md:-translate-x-[50%]">
+    <Link href='/ar/accueil' className="absolute left-[50%] translate-x-[-50%] top-[0%] z-10 text-4xl font-black text-white md:absolute md:left-[50%] md:-translate-x-[50%]">
     <Image src="/img/logoFond.png" alt="Pizzalif" width={90} height={90} />
   </Link>
   );
@@ -50,9 +52,9 @@ const NavLeft = ({ setIsOpen }) => {
         <FiMenu />
       </motion.button>
       <Logo />
-      <NavLink text="مطبوخ" linksite="/ar/cuit" />
-      <NavLink text="تجميد" linksite="/ar/surgeler" />
-      <NavLink text="تقديم الطعام" linksite="/ar/traiteur" />
+      <NavLink text="مخبوز" linksite="/ar/cuit" />
+      <NavLink text="مجمد" linksite="/ar/surgeler" />
+      <NavLink text="مُعالج" linksite="/ar/traiteur" />
     </div>
   );
 };
@@ -100,9 +102,9 @@ const NavMenu = ({ isOpen }) => {
       animate={isOpen ? "open" : "closed"}
       className={`${styles.navBar} absolute py-3 shadow-lg left-0 right-0 top-full origin-top flex flex-col gap-3`}
     >
-      <MenuLink text="مطبوخ" linksite="/ar/cuit" />
-      <MenuLink text="تجميد" linksite="/ar/surgeler" />
-      <MenuLink text="تقديم الطعام" linksite="/ar/traiteur" />
+      <MenuLink text="مخبوز" linksite="/ar/cuit" />
+      <MenuLink text="مجمد" linksite="/ar/surgeler" />
+      <MenuLink text="مُعالج" linksite="/ar/traiteur" />
       <MenuLink text="اتصل بنا" linksite="/ar/#contact" />
     </motion.div>
   );

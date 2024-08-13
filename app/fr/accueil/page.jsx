@@ -58,7 +58,7 @@ export default function AccueilPage() {
         <div className={styles.categoriesContent}>
           <h1>NOS CATÉGORIES</h1>
           <div className={styles.cards}>
-            <a href="/cuit"
+            <a href="/fr/cuit"
               onMouseEnter={() => setOnHoverLogo(1)}  // Set hovered item on mouse enter
               onMouseLeave={() => setOnHoverLogo(null)} 
             >
@@ -68,7 +68,7 @@ export default function AccueilPage() {
                 <h2>Cuit</h2>
               </div>
             </a>
-            <a href="/surgele"
+            <a href="/fr/surgeler"
               onMouseEnter={() => setOnHoverLogo(2)}  // Set hovered item on mouse enter
               onMouseLeave={() => setOnHoverLogo(null)} 
             >
@@ -78,7 +78,7 @@ export default function AccueilPage() {
                 <h2>Surgelé</h2>
               </div>
             </a>
-            <a href="/traiteur"
+            <a href="/fr/traiteur"
               onMouseEnter={() => setOnHoverLogo(3)}  // Set hovered item on mouse enter
               onMouseLeave={() => setOnHoverLogo(null)} 
             >

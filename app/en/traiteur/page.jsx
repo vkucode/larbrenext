@@ -11,32 +11,32 @@ export default function Traiteur() {
   return (
     <>
       <section className={styles.sectionPage}>
-        <a href="/traiteur/salade"
+        <a href="/en/traiteur/salade"
           onMouseEnter={() => setHoveredItem(1)}
           onMouseLeave={() => setHoveredItem(null)}
         >
             <div className="absolute w-full h-full z-10 bg-black bg-opacity-50"></div>
-            <Image src="/img/categories/salade.jpg" width={1000} height={1000} alt="pain" />
+            <Image src="/img/categories/salade.jpg" width={1000} height={1000} alt="salad" />
             <Image src="/img/logo.png" className={styles.logoCat} width={200} height={200} alt="logo" />
             <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 1 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
-            <h1>Salade</h1>
+            <h1>Salad</h1>
         </a>
-        <a href="/traiteur/sandwich"
+        <a href="/en/traiteur/sandwich"
         onMouseEnter={() => setHoveredItem(2)}
         onMouseLeave={() => setHoveredItem(null)}
         >
           <div className="absolute w-full h-full z-10 bg-black bg-opacity-50"></div>
-          <Image src="/img/categories/sandwich.jpg" width={1000} height={1000} alt="pain" />
+          <Image src="/img/categories/sandwich.jpg" width={1000} height={1000} alt="sandwich" />
           <Image src="/img/logo.png" className={styles.logoCat} width={200} height={200} alt="logo" />
           <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 2 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
           <h1>Sandwich</h1>
         </a>
-        <a href="/traiteur/quiche"
+        <a href="/en/traiteur/quiche"
         onMouseEnter={() => setHoveredItem(3)}
         onMouseLeave={() => setHoveredItem(null)}
         >
           <div className="absolute w-full h-full z-10 bg-black bg-opacity-50"></div>
-          <Image src="/img/categories/quiche.jpg" width={1000} height={1000} alt="pain" />
+          <Image src="/img/categories/quiche.jpg" width={1000} height={1000} alt="quiche" />
           <Image src="/img/logo.png" className={styles.logoCat} width={200} height={200} alt="logo" />
           <FaChevronRight className={`${styles.arrowCat} animate__animated ${hoveredItem === 3 ? 'animate__fadeInLeft' : 'animate__fadeOutRight'}`}/>
           <h1>Quiche</h1>
