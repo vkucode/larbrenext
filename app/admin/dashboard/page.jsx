@@ -8,6 +8,7 @@ import { TbEdit, TbTrash, TbPlus } from "react-icons/tb";
 
 export default function Dashboard() {
   const [products, setProducts] = useState([]);
+  const [selectedType, setSelectedType] = useState(''); // State pentru tipul selectat
   const router = useRouter();
 
   const fetchProducts = async () => {
@@ -24,9 +25,13 @@ export default function Dashboard() {
     fetchProducts();
   }, []);
 
-  const handleAddOrEdit = () => {
-    fetchProducts();  // Reîncărcăm produsele după adăugare/editare
+  const handleTypeSelection = (type) => {
+    setSelectedType(type); // Setăm tipul selectat
   };
+
+  const filteredProducts = selectedType
+    ? products.filter(product => product.tip_produs === selectedType) // Filtrăm produsele după tip
+    : products;
 
   const deleteProduct = async (id) => {
     const confirmed = confirm('Est-ce que vous êtes sûr de vouloir supprimer ce produit?');
@@ -54,13 +59,17 @@ export default function Dashboard() {
     <section className={styles.dashboard}>
       <div className='flex flex-row justify-between items-center w-full max-w-6xl'>
         <h1>Product Dashboard</h1>
-        <Link href="/admin/dashboard/add" onClick={handleAddOrEdit}><button>Ajouter&nbsp;<TbPlus /></button></Link>
+        {/* Adăugăm funcționalitate pentru filtrarea produselor */}
+        <button onClick={() => handleTypeSelection('Cuit')}>Cuit</button>
+        <button onClick={() => handleTypeSelection('Surgeler')}>Surgeler</button>
+        <button onClick={() => handleTypeSelection('Traiteur')}>Traiteur</button>
+        <button onClick={() => handleTypeSelection('')}>Tous</button> {/* Buton pentru a reseta filtrarea */}
+        <Link href="/admin/dashboard/add"><button>Ajouter&nbsp;<TbPlus /></button></Link>
       </div>
       <div className={styles.productList}>
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <div key={product.id} className={styles.productItem}>
             <h1>{product.nume_produs}</h1>
-            {/* 2. Modificarea URL-ului imaginii pentru a dezactiva cache-ul */}
             <Image 
               src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}?t=${new Date().getTime()}`} 
               alt={product.nume_produs} 
@@ -68,7 +77,7 @@ export default function Dashboard() {
               height={150} 
             />
             <div className={styles.controlBtns}>
-              <Link href={`/admin/dashboard/${product.id}`} onClick={handleAddOrEdit}><button>Edit&nbsp;<TbEdit /></button></Link>
+              <Link href={`/admin/dashboard/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
               <button onClick={() => deleteProduct(product.id)}>Delete&nbsp;<TbTrash /></button>
             </div>
           </div>
