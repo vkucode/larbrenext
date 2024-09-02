@@ -107,9 +107,7 @@ export default async function handler(req, res) {
       !descriere_en ||
       !descriere ||
       !tip ||
-      !categorie ||
-      !imagine ||
-      !fiche
+      !categorie
     ) {
       return res
         .status(400)
@@ -117,9 +115,9 @@ export default async function handler(req, res) {
     }
 
     try {
-      const query =
-        "UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?, imagine_produs = ?, fiche_tech = ? WHERE id = ?";
-      await dbconnection.execute(query, [
+      let query =
+        "UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?";
+      let queryParams = [
         nume_ar,
         nume_en,
         nume,
@@ -128,10 +126,22 @@ export default async function handler(req, res) {
         descriere,
         tip,
         categorie,
-        imagine,
-        fiche,
-        id,
-      ]);
+      ];
+
+      if (imagine !== null) {
+        query += ", imagine_produs = ?";
+        queryParams.push(imagine);
+      }
+
+      if (fiche !== null) {
+        query += ", fiche_tech = ?";
+        queryParams.push(fiche);
+      }
+
+      query += " WHERE id = ?";
+      queryParams.push(id);
+
+      await dbconnection.execute(query, queryParams);
       res.status(200).json({ message: "Product updated" });
     } catch (error) {
       res.status(500).json({ message: error.message });

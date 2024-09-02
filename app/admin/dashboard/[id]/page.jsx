@@ -70,24 +70,32 @@ export default function EditProductPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch(`https://www.larbreapains.fr/api/editProduct`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id, ...formData }),
-      });
+    
+    // Dacă utilizatorul nu a ales o imagine sau o fișă tehnică nouă, trimitem `null` pentru a păstra valoarea actuală.
+    const updatedFormData = {
+        ...formData,
+        imagine: formData.imagine === product.imagine_produs ? null : formData.imagine,
+        fiche: formData.fiche === product.fiche_tech ? null : formData.fiche,
+    };
 
-      if (response.ok) {
-        router.push('/admin/dashboard');
-      } else {
-        console.error('Failed to update product');
-      }
+    try {
+        const response = await fetch(`https://www.larbreapains.fr/api/products`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id, ...updatedFormData }),
+        });
+
+        if (response.ok) {
+            router.push('/admin/dashboard');
+        } else {
+            console.error('Failed to update product');
+        }
     } catch (error) {
-      console.error('Error:', error);
+        console.error('Error:', error);
     }
-  };
+};
 
   if (!product) return <div>Loading...</div>;
 

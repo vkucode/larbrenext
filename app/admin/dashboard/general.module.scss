@@ -111,4 +111,9 @@
     }
 }
 
-// Remove section
+// Loading Page section
+
+.loadingPage{
+    @apply fixed z-50 w-screen h-screen top-0 left-0 bg-[var(--color-main-light)] flex flex-col justify-center items-center;
+    
+}
