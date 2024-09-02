@@ -10,18 +10,23 @@ export default function Dashboard() {
   const [products, setProducts] = useState([]);
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const response = await fetch('https://larbreapains.fr/api/products');
-        const data = await response.json();
-        setProducts(data.products);
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      }
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('https://larbreapains.fr/api/products');
+      const data = await response.json();
+      setProducts(data.products);
+    } catch (error) {
+      console.error('Failed to fetch products:', error);
     }
+  };
+
+  useEffect(() => {
     fetchProducts();
   }, []);
+
+  const handleAddOrEdit = () => {
+    fetchProducts();  // Reîncărcăm produsele după adăugare/editare
+  };
 
   const deleteProduct = async (id) => {
     const confirmed = confirm('Est-ce que vous êtes sûr de vouloir supprimer ce produit?');
@@ -49,15 +54,21 @@ export default function Dashboard() {
     <section className={styles.dashboard}>
       <div className='flex flex-row justify-between items-center w-full max-w-6xl'>
         <h1>Product Dashboard</h1>
-        <Link href="/admin/dashboard/add"><button>Ajouter&nbsp;<TbPlus /></button></Link>
+        <Link href="/admin/dashboard/add" onClick={handleAddOrEdit}><button>Ajouter&nbsp;<TbPlus /></button></Link>
       </div>
       <div className={styles.productList}>
         {products.map((product) => (
           <div key={product.id} className={styles.productItem}>
             <h1>{product.nume_produs}</h1>
-            <Image src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}`} alt={product.nume_produs} width={150} height={150} />
+            {/* 2. Modificarea URL-ului imaginii pentru a dezactiva cache-ul */}
+            <Image 
+              src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}?t=${new Date().getTime()}`} 
+              alt={product.nume_produs} 
+              width={150} 
+              height={150} 
+            />
             <div className={styles.controlBtns}>
-              <Link href={`/admin/dashboard/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
+              <Link href={`/admin/dashboard/${product.id}`} onClick={handleAddOrEdit}><button>Edit&nbsp;<TbEdit /></button></Link>
               <button onClick={() => deleteProduct(product.id)}>Delete&nbsp;<TbTrash /></button>
             </div>
           </div>
