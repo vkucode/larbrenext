@@ -16,7 +16,7 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Permite accesul din orice origine
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, DELETE, PATCH"
@@ -86,7 +86,6 @@ export default async function handler(req, res) {
             {
               folder: "larbreapains/fichetech",
               resource_type: "raw", // Setăm tipul fișierului la "raw" pentru PDF-uri
-              format: "pdf", // Asigurăm că formatul rămâne PDF
             }
           );
           ficheUrl = ficheUploadResult.secure_url;
@@ -121,16 +120,6 @@ export default async function handler(req, res) {
         await dbconnection.end();
       }
     });
-  } else if (req.method === "GET") {
-    try {
-      const query = "SELECT * FROM produits";
-      const [results] = await dbconnection.execute(query);
-      res.status(200).json({ products: results });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    } finally {
-      await dbconnection.end();
-    }
   } else if (req.method === "PUT") {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
@@ -195,7 +184,6 @@ export default async function handler(req, res) {
             {
               folder: "larbreapains/fichetech",
               resource_type: "raw", // Setăm tipul fișierului la "raw" pentru PDF-uri
-              format: "pdf", // Asigurăm că formatul rămâne PDF
             }
           );
           const ficheUrl = ficheUploadResult.secure_url;
@@ -226,13 +214,13 @@ export default async function handler(req, res) {
     if (!id) {
       return res
         .status(400)
-        .json({ message: "ID-ul produsului este necesar." });
+        .json({ message: "ID-ul produsului est nécessaire." });
     }
 
     try {
       const query = "DELETE FROM produits WHERE id = ?";
       await dbconnection.execute(query, [id]);
-      res.status(200).json({ message: "Produs șters" });
+      res.status(200).json({ message: "Produit supprimé" });
     } catch (error) {
       res.status(500).json({ message: error.message });
     } finally {

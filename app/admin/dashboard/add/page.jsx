@@ -52,7 +52,7 @@ export default function AddProduct() {
       });
 
       if (response.ok) {
-        setMessage('Produsul a fost adăugat cu succes.');
+        setMessage('Le produit a été ajouté avec succès.');
         setTimeout(() => {
           router.push('/admin/dashboard');
         }, 1500);
