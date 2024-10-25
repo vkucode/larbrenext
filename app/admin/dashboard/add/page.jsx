@@ -14,8 +14,8 @@ export default function AddProduct() {
   const [descriere, setDescriereFR] = useState('');
   const [tip, setTip] = useState('');
   const [categorie, setCategorie] = useState('');
-  const [imagine, setImagine] = useState(null); // Setăm fișierul de imagine
-  const [fiche, setFiche] = useState(null); // Setăm fișierul tehnic
+  const [imagine, setImagine] = useState(null);
+  const [fiche, setFiche] = useState(null);
   const [message, setMessage] = useState('');
   const router = useRouter();
 
@@ -42,11 +42,11 @@ export default function AddProduct() {
     formData.append("descriere", descriere);
     formData.append("tip", tip);
     formData.append("categorie", categorie);
-    formData.append("imagine", imagine); // Trimitem fișierul imagine
-    formData.append("fiche", fiche); // Trimitem fișierul tehnic
+    formData.append("imagine", imagine);
+    formData.append("fiche", fiche);
 
     try {
-      const response = await fetch('https://larbreapains.fr/api/products', {
+      const response = await fetch('/api/products', {
         method: 'POST',
         body: formData,
       });

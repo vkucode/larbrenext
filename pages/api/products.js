@@ -16,7 +16,7 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Permite accesul din orice origine
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, DELETE"
@@ -35,15 +35,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (req.method === "GET") {
-    try {
-      const query = "SELECT * FROM produits";
-      const [results] = await dbconnection.execute(query);
-      res.status(200).json({ products: results });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  } else if (req.method === "POST") {
+  if (req.method === "POST") {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
       if (err) {
@@ -66,25 +58,35 @@ export default async function handler(req, res) {
 
       // Încărcăm imaginea pe Cloudinary
       if (files.imagine) {
-        const imageUploadResult = await cloudinary.v2.uploader.upload(
-          files.imagine.filepath,
-          {
-            folder: "larbreapains/img",
-          }
-        );
-        imageUrl = imageUploadResult.secure_url;
+        try {
+          const imageUploadResult = await cloudinary.v2.uploader.upload(
+            files.imagine.filepath,
+            {
+              folder: "larbreapains/img",
+            }
+          );
+          imageUrl = imageUploadResult.secure_url;
+        } catch (error) {
+          return res.status(500).json({ message: "Image upload failed" });
+        }
       }
 
       // Încărcăm fișa tehnică pe Cloudinary
       if (files.fiche) {
-        const ficheUploadResult = await cloudinary.v2.uploader.upload(
-          files.fiche.filepath,
-          {
-            folder: "larbreapains/fichetech",
-            resource_type: "raw", // Setăm tipul fișierului ca "raw" pentru a permite alte tipuri
-          }
-        );
-        ficheUrl = ficheUploadResult.secure_url;
+        try {
+          const ficheUploadResult = await cloudinary.v2.uploader.upload(
+            files.fiche.filepath,
+            {
+              folder: "larbreapains/fichetech",
+              resource_type: "raw", // Setăm tipul fișierului ca "raw" pentru a permite alte tipuri
+            }
+          );
+          ficheUrl = ficheUploadResult.secure_url;
+        } catch (error) {
+          return res
+            .status(500)
+            .json({ message: "Technical file upload failed" });
+        }
       }
 
       try {
@@ -111,6 +113,16 @@ export default async function handler(req, res) {
         await dbconnection.end();
       }
     });
+  } else if (req.method === "GET") {
+    try {
+      const query = "SELECT * FROM produits";
+      const [results] = await dbconnection.execute(query);
+      res.status(200).json({ products: results });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    } finally {
+      await dbconnection.end();
+    }
   } else if (req.method === "PUT") {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
@@ -145,29 +157,39 @@ export default async function handler(req, res) {
 
       // Încărcăm imaginea pe Cloudinary dacă este furnizată
       if (files.imagine) {
-        const imageUploadResult = await cloudinary.v2.uploader.upload(
-          files.imagine.filepath,
-          {
-            folder: "larbreapains/img",
-          }
-        );
-        const imageUrl = imageUploadResult.secure_url;
-        query += ", imagine_produs = ?";
-        queryParams.push(imageUrl);
+        try {
+          const imageUploadResult = await cloudinary.v2.uploader.upload(
+            files.imagine.filepath,
+            {
+              folder: "larbreapains/img",
+            }
+          );
+          const imageUrl = imageUploadResult.secure_url;
+          query += ", imagine_produs = ?";
+          queryParams.push(imageUrl);
+        } catch (error) {
+          return res.status(500).json({ message: "Image upload failed" });
+        }
       }
 
       // Încărcăm fișierul tehnic pe Cloudinary dacă este furnizat
       if (files.fiche) {
-        const ficheUploadResult = await cloudinary.v2.uploader.upload(
-          files.fiche.filepath,
-          {
-            folder: "larbreapains/fichetech",
-            resource_type: "raw",
-          }
-        );
-        const ficheUrl = ficheUploadResult.secure_url;
-        query += ", fiche_tech = ?";
-        queryParams.push(ficheUrl);
+        try {
+          const ficheUploadResult = await cloudinary.v2.uploader.upload(
+            files.fiche.filepath,
+            {
+              folder: "larbreapains/fichetech",
+              resource_type: "raw",
+            }
+          );
+          const ficheUrl = ficheUploadResult.secure_url;
+          query += ", fiche_tech = ?";
+          queryParams.push(ficheUrl);
+        } catch (error) {
+          return res
+            .status(500)
+            .json({ message: "Technical file upload failed" });
+        }
       }
 
       query += " WHERE id = ?";
@@ -200,5 +222,8 @@ export default async function handler(req, res) {
     } finally {
       await dbconnection.end();
     }
+  } else {
+    res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
