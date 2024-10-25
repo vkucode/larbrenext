@@ -16,7 +16,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "flag-icons": "^7.2.3",
-    "formidable": "^3.5.1",
+    "formidable": "^2.1.2",
     "framer-motion": "^11.2.9",
     "fs": "^0.0.1-security",
     "gsap": "^3.12.5",
