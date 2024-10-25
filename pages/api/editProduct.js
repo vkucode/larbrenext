@@ -1,4 +1,12 @@
 import mysql from "mysql2/promise";
+import cloudinary from "cloudinary";
+
+// Configurare Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export const config = {
   api: {
@@ -55,8 +63,8 @@ export default async function handler(req, res) {
       descriere,
       tip,
       categorie,
-      imagine,
-      fiche,
+      imagine, // Fișierul de imagine
+      fiche, // Fișierul tehnic
     } = req.body;
 
     if (
@@ -78,6 +86,24 @@ export default async function handler(req, res) {
     }
 
     try {
+      // Încărcăm imaginea pe Cloudinary în dosarul specificat
+      const imageUploadResult = await cloudinary.v2.uploader.upload(imagine, {
+        folder: "larbreapains/img", // Dosarul pentru imagini
+      });
+
+      // URL-ul imaginii încărcate pe Cloudinary
+      const imageUrl = imageUploadResult.secure_url;
+
+      // Încărcăm fișierul tehnic pe Cloudinary în dosarul specificat
+      const ficheUploadResult = await cloudinary.v2.uploader.upload(fiche, {
+        folder: "larbreapains/fichetech", // Dosarul pentru fișierele tehnice
+        resource_type: "raw", // Setăm tipul fișierului ca "raw" pentru a permite încărcarea altor tipuri decât imagini
+      });
+
+      // URL-ul fișierului tehnic încărcat pe Cloudinary
+      const ficheUrl = ficheUploadResult.secure_url;
+
+      // Actualizăm baza de date cu URL-urile imaginii și fișierului tehnic
       const query =
         "UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?, imagine_produs = ?, fiche_tech = ? WHERE id = ?";
       await dbconnection.execute(query, [
@@ -89,11 +115,11 @@ export default async function handler(req, res) {
         descriere,
         tip,
         categorie,
-        imagine,
-        fiche,
+        imageUrl, // URL-ul imaginii de pe Cloudinary
+        ficheUrl, // URL-ul fișierului tehnic de pe Cloudinary
         id,
       ]);
-      res.status(200).json({ message: "Product updated" });
+      res.status(200).json({ message: "Produs actualizat" });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
