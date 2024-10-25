@@ -173,22 +173,31 @@ export default async function handler(req, res) {
       }
 
       // Încărcăm fișierul tehnic pe Cloudinary dacă este furnizat
+      // Încărcăm fișa tehnică pe Cloudinary
       if (files.fiche) {
         try {
+          // Verificăm dacă fișierul este de tip PDF
+          if (files.fiche.mimetype !== "application/pdf") {
+            return res
+              .status(400)
+              .json({
+                message: "Doar fișiere PDF sunt permise pentru încărcare.",
+              });
+          }
+
           const ficheUploadResult = await cloudinary.v2.uploader.upload(
             files.fiche.filepath,
             {
               folder: "larbreapains/fichetech",
-              resource_type: "raw",
+              resource_type: "raw", // Setăm tipul fișierului la "raw" pentru PDF-uri
+              format: "pdf", // Asigurăm că formatul rămâne PDF
             }
           );
-          const ficheUrl = ficheUploadResult.secure_url;
-          query += ", fiche_tech = ?";
-          queryParams.push(ficheUrl);
+          ficheUrl = ficheUploadResult.secure_url;
         } catch (error) {
           return res
             .status(500)
-            .json({ message: "Technical file upload failed" });
+            .json({ message: "Încărcarea fișei tehnice a eșuat." });
         }
       }
 
