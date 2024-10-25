@@ -85,7 +85,7 @@ export default async function handler(req, res) {
             files.fiche.filepath,
             {
               folder: "larbreapains/fichetech",
-              resource_type: "raw", // Setăm tipul fișierului la "raw" pentru PDF-uri
+              resource_type: "auto", // Setăm tipul fișierului la "raw" pentru PDF-uri
               format: "pdf",
             }
           );
@@ -194,7 +194,7 @@ export default async function handler(req, res) {
             files.fiche.filepath,
             {
               folder: "larbreapains/fichetech",
-              resource_type: "raw", // Setăm tipul fișierului la "raw" pentru PDF-uri
+              resource_type: "auto", // Setăm tipul fișierului la "raw" pentru PDF-uri
               format: "pdf",
             }
           );
