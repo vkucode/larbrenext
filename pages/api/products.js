@@ -78,7 +78,7 @@ export default async function handler(req, res) {
             files.fiche.filepath,
             {
               folder: "larbreapains/fichetech",
-              resource_type: "raw", // Setăm tipul fișierului ca "raw" pentru a permite alte tipuri
+              resource_type: "auto", // Setăm tipul fișierului ca "auto" pentru a permite alte tipuri
             }
           );
           ficheUrl = ficheUploadResult.secure_url;
