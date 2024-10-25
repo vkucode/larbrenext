@@ -16,7 +16,7 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Permite accesul din orice origine
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, DELETE, PATCH"
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
       } = fields;
 
       let imageUrl = null;
-      let ficheUrl = null;
+      let ficheUrls = [];
 
       // Încărcăm imaginea pe Cloudinary
       if (files.imagine) {
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
         }
       }
 
-      // Încărcăm fișa tehnică pe Cloudinary
+      // Încărcăm fișa tehnică și o transformăm în imagini pe pagină
       if (files.fiche) {
         try {
           // Verificăm dacă fișierul este de tip PDF
@@ -81,15 +81,34 @@ export default async function handler(req, res) {
             });
           }
 
-          const ficheUploadResult = await cloudinary.v2.uploader.upload(
+          // Încarcă fișierul PDF
+          const uploadResult = await cloudinary.v2.uploader.upload(
             files.fiche.filepath,
             {
               folder: "larbreapains/fichetech",
-              resource_type: "auto", // Setăm tipul fișierului la "raw" pentru PDF-uri
-              format: "pdf",
+              public_id: `fiche_${Date.now()}`, // Creăm un ID unic pentru fișier
+              resource_type: "raw",
             }
           );
-          ficheUrl = ficheUploadResult.secure_url;
+
+          // Explodăm fișierul PDF în imagini pentru fiecare pagină
+          await cloudinary.v2.uploader.explicit(uploadResult.public_id, {
+            type: "upload",
+            resource_type: "image",
+            eager: [{ page: "all" }],
+            eager_async: false,
+          });
+
+          // Adunăm toate URL-urile imaginilor rezultate
+          const ficheImages = await cloudinary.v2.api.resources({
+            type: "upload",
+            prefix: uploadResult.public_id,
+            resource_type: "image",
+          });
+
+          ficheUrls = ficheImages.resources.map(
+            (resource) => resource.secure_url
+          );
         } catch (error) {
           return res
             .status(500)
@@ -111,10 +130,12 @@ export default async function handler(req, res) {
           tip,
           categorie,
           imageUrl,
-          ficheUrl,
+          JSON.stringify(ficheUrls), // Salvăm toate URL-urile imaginilor într-un JSON
         ]);
 
-        res.status(201).json({ message: "Produit ajouté avec succès" });
+        res
+          .status(201)
+          .json({ message: "Produit ajouté avec succès", ficheUrls });
       } catch (error) {
         res.status(500).json({ message: error.message });
       } finally {
@@ -190,17 +211,36 @@ export default async function handler(req, res) {
             });
           }
 
-          const ficheUploadResult = await cloudinary.v2.uploader.upload(
+          // Încarcă fișierul PDF
+          const uploadResult = await cloudinary.v2.uploader.upload(
             files.fiche.filepath,
             {
               folder: "larbreapains/fichetech",
-              resource_type: "auto", // Setăm tipul fișierului la "raw" pentru PDF-uri
-              format: "pdf",
+              public_id: `fiche_${Date.now()}`,
+              resource_type: "raw",
             }
           );
-          const ficheUrl = ficheUploadResult.secure_url;
+
+          // Explodăm fișierul PDF în imagini pentru fiecare pagină
+          await cloudinary.v2.uploader.explicit(uploadResult.public_id, {
+            type: "upload",
+            resource_type: "image",
+            eager: [{ page: "all" }],
+            eager_async: false,
+          });
+
+          // Adunăm toate URL-urile imaginilor rezultate
+          const ficheImages = await cloudinary.v2.api.resources({
+            type: "upload",
+            prefix: uploadResult.public_id,
+            resource_type: "image",
+          });
+
+          const ficheUrls = ficheImages.resources.map(
+            (resource) => resource.secure_url
+          );
           query += ", fiche_tech = ?";
-          queryParams.push(ficheUrl);
+          queryParams.push(JSON.stringify(ficheUrls));
         } catch (error) {
           return res
             .status(500)
@@ -226,7 +266,7 @@ export default async function handler(req, res) {
     if (!id) {
       return res
         .status(400)
-        .json({ message: "ID-ul produsului este necesar." });
+        .json({ message: "ID-ul produsului est nécessaire." });
     }
 
     try {
