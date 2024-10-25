@@ -1,11 +1,11 @@
 'use client'
 import { useState } from "react";
 
-export default function UpdateImages() {
+export default function UpdateTechnicalFiles() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handleUpdateImages = async () => {
+  const handleUpdateTechnicalFiles = async () => {
     setLoading(true);
     setMessage("");
 
@@ -19,10 +19,10 @@ export default function UpdateImages() {
 
       if (response.ok) {
         const data = await response.json();
-        setMessage(data.message || "Imaginile au fost actualizate cu succes.");
+        setMessage(data.message || "Fișele tehnice au fost actualizate cu succes.");
       } else {
         const errorData = await response.json();
-        setMessage(errorData.message || "A apărut o eroare la actualizarea imaginilor.");
+        setMessage(errorData.message || "A apărut o eroare la actualizarea fișelor tehnice.");
       }
     } catch (error) {
       setMessage("A apărut o eroare: " + error.message);
@@ -34,7 +34,7 @@ export default function UpdateImages() {
   return (
     <div className="h-dvh flex flex-col justify-center items-center">
       <button
-        onClick={handleUpdateImages}
+        onClick={handleUpdateTechnicalFiles}
         disabled={loading}
         style={{
           padding: "10px 20px",
@@ -45,7 +45,7 @@ export default function UpdateImages() {
           cursor: loading ? "not-allowed" : "pointer",
         }}
       >
-        {loading ? "Se actualizează..." : "Actualizează Imaginile"}
+        {loading ? "Se actualizează..." : "Actualizează Fișele Tehnice"}
       </button>
       {message && <p>{message}</p>}
     </div>

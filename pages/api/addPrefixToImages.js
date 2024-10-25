@@ -1,76 +1,60 @@
 import mysql from "mysql2/promise";
-import cloudinary from "cloudinary";
-import formidable from "formidable";
 
-// Configurare Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+// Configurare conexiune la baza de date
+const dbconnection = mysql.createPool({
+  host: "localhost",
+  database: "larbreapains",
+  user: "larbreapains",
+  password: "adminVku23#",
 });
 
 export const config = {
   api: {
-    bodyParser: false, // Dezactivăm bodyParser pentru a folosi formidable
+    bodyParser: false,
   },
 };
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Permite accesul din orice origine
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, DELETE, PATCH"
   );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  const dbconnection = await mysql.createConnection({
-    host: "localhost",
-    database: "larbreapains",
-    user: "larbreapains",
-    password: "adminVku23#",
-  });
-
   if (req.method === "OPTIONS") {
     res.status(200).end();
     return;
   }
 
-  if (req.method === "POST") {
-    // Codul existent pentru metoda POST...
-  } else if (req.method === "GET") {
-    // Codul existent pentru metoda GET...
-  } else if (req.method === "PUT") {
-    // Codul existent pentru metoda PUT...
-  } else if (req.method === "DELETE") {
-    // Codul existent pentru metoda DELETE...
-  } else if (req.method === "PATCH") {
+  if (req.method === "PATCH") {
     try {
-      const prefix = "https://www.larbreapains.fr/img/imgProducts/";
+      const prefix = "https://www.larbreapains.fr/ficheTechnique/";
 
-      // Obținem toate produsele care au un URL de imagine fără prefix
+      // Obținem toate produsele care au o fișă tehnică
       const [produse] = await dbconnection.execute(
-        "SELECT id, imagine_produs FROM produits WHERE imagine_produs IS NOT NULL"
+        "SELECT id, fiche_tech FROM produits WHERE fiche_tech IS NOT NULL"
       );
 
-      // Actualizăm fiecare produs, adăugând prefixul la imagine
+      // Actualizăm fiecare fișă tehnică, adăugând prefixul dacă nu există deja
       for (const produs of produse) {
-        const { id, imagine_produs } = produs;
+        const { id, fiche_tech } = produs;
 
         // Adăugăm prefixul doar dacă URL-ul nu conține deja prefixul
-        if (!imagine_produs.startsWith(prefix)) {
-          const newImageUrl = prefix + imagine_produs;
+        if (!fiche_tech.startsWith(prefix)) {
+          const newFicheUrl = prefix + fiche_tech;
 
-          // Actualizăm URL-ul imaginii în baza de date
+          // Actualizăm URL-ul fișei tehnice în baza de date
           await dbconnection.execute(
-            "UPDATE produits SET imagine_produs = ? WHERE id = ?",
-            [newImageUrl, id]
+            "UPDATE produits SET fiche_tech = ? WHERE id = ?",
+            [newFicheUrl, id]
           );
         }
       }
 
       res
         .status(200)
-        .json({ message: "Prefixul a fost adăugat la toate imaginile." });
+        .json({ message: "Prefixul a fost adăugat la toate fișele tehnice." });
     } catch (error) {
       res.status(500).json({ message: error.message });
     } finally {
