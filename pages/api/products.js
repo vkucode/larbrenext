@@ -86,6 +86,7 @@ export default async function handler(req, res) {
             {
               folder: "larbreapains/fichetech",
               resource_type: "raw", // Setăm tipul fișierului la "raw" pentru PDF-uri
+              format: "pdf",
             }
           );
           ficheUrl = ficheUploadResult.secure_url;
@@ -194,6 +195,7 @@ export default async function handler(req, res) {
             {
               folder: "larbreapains/fichetech",
               resource_type: "raw", // Setăm tipul fișierului la "raw" pentru PDF-uri
+              format: "pdf",
             }
           );
           const ficheUrl = ficheUploadResult.secure_url;
