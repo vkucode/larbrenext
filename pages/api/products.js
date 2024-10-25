@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 import cloudinary from "cloudinary";
+import formidable from "formidable";
 
 // Configurare Cloudinary
 cloudinary.config({
@@ -10,7 +11,7 @@ cloudinary.config({
 
 export const config = {
   api: {
-    bodyParser: true, // Permite utilizarea bodyParser pentru datele JSON
+    bodyParser: false, // Dezactivăm bodyParser pentru a folosi formidable
   },
 };
 
@@ -43,58 +44,13 @@ export default async function handler(req, res) {
       res.status(500).json({ message: error.message });
     }
   } else if (req.method === "POST") {
-    const {
-      nume_ar,
-      nume_en,
-      nume,
-      descriere_ar,
-      descriere_en,
-      descriere,
-      tip,
-      categorie,
-      imagine, // Fișier imagine
-      fiche, // Fișier tehnic
-    } = req.body;
+    const form = new formidable.IncomingForm();
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        return res.status(500).json({ message: "Form parsing error" });
+      }
 
-    if (
-      !nume_ar ||
-      !nume_en ||
-      !nume ||
-      !descriere_ar ||
-      !descriere_en ||
-      !descriere ||
-      !tip ||
-      !categorie ||
-      !imagine ||
-      !fiche
-    ) {
-      return res
-        .status(400)
-        .json({ message: "Toate câmpurile trebuie completate." });
-    }
-
-    try {
-      // Încărcăm imaginea pe Cloudinary în dosarul specificat
-      const imageUploadResult = await cloudinary.v2.uploader.upload(imagine, {
-        folder: "larbreapains/img", // Dosarul pentru imagini
-      });
-
-      // URL-ul imaginii încărcate pe Cloudinary
-      const imageUrl = imageUploadResult.secure_url;
-
-      // Încărcăm fișierul tehnic pe Cloudinary în dosarul specificat
-      const ficheUploadResult = await cloudinary.v2.uploader.upload(fiche, {
-        folder: "larbreapains/fichetech", // Dosarul pentru fișierele tehnice
-        resource_type: "raw", // Setăm tipul fișierului ca "raw" pentru a permite încărcarea altor tipuri decât imagini
-      });
-
-      // URL-ul fișierului tehnic încărcat pe Cloudinary
-      const ficheUrl = ficheUploadResult.secure_url;
-
-      // Salvăm datele în baza de date cu URL-urile Cloudinary
-      const query =
-        "INSERT INTO produits (nume_produs_ar, nume_produs_en, nume_produs, descriere_produs_ar, descriere_produs_en, descriere_produs, tip_produs, categoria_produs, imagine_produs, fiche_tech) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      await dbconnection.execute(query, [
+      const {
         nume_ar,
         nume_en,
         nume,
@@ -103,44 +59,77 @@ export default async function handler(req, res) {
         descriere,
         tip,
         categorie,
-        imageUrl, // URL-ul imaginii de pe Cloudinary
-        ficheUrl, // URL-ul fișierului tehnic de pe Cloudinary
-      ]);
-      res.status(201).json({ message: "Produs adăugat cu succes" });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
+      } = fields;
+
+      let imageUrl = null;
+      let ficheUrl = null;
+
+      // Încărcăm imaginea pe Cloudinary
+      if (files.imagine) {
+        const imageUploadResult = await cloudinary.v2.uploader.upload(
+          files.imagine.filepath,
+          {
+            folder: "larbreapains/img",
+          }
+        );
+        imageUrl = imageUploadResult.secure_url;
+      }
+
+      // Încărcăm fișa tehnică pe Cloudinary
+      if (files.fiche) {
+        const ficheUploadResult = await cloudinary.v2.uploader.upload(
+          files.fiche.filepath,
+          {
+            folder: "larbreapains/fichetech",
+            resource_type: "raw", // Setăm tipul fișierului ca "raw" pentru a permite alte tipuri
+          }
+        );
+        ficheUrl = ficheUploadResult.secure_url;
+      }
+
+      try {
+        // Salvăm datele în baza de date
+        const query =
+          "INSERT INTO produits (nume_produs_ar, nume_produs_en, nume_produs, descriere_produs_ar, descriere_produs_en, descriere_produs, tip_produs, categoria_produs, imagine_produs, fiche_tech) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        await dbconnection.execute(query, [
+          nume_ar,
+          nume_en,
+          nume,
+          descriere_ar,
+          descriere_en,
+          descriere,
+          tip,
+          categorie,
+          imageUrl,
+          ficheUrl,
+        ]);
+
+        res.status(201).json({ message: "Produs adăugat cu succes" });
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      } finally {
+        await dbconnection.end();
+      }
+    });
   } else if (req.method === "PUT") {
-    const {
-      id,
-      nume_ar,
-      nume_en,
-      nume,
-      descriere_ar,
-      descriere_en,
-      descriere,
-      tip,
-      categorie,
-      imagine,
-      fiche,
-    } = req.body;
+    const form = new formidable.IncomingForm();
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        return res.status(500).json({ message: "Form parsing error" });
+      }
 
-    if (
-      !nume_ar ||
-      !nume_en ||
-      !nume ||
-      !descriere_ar ||
-      !descriere_en ||
-      !descriere ||
-      !tip ||
-      !categorie
-    ) {
-      return res
-        .status(400)
-        .json({ message: "Toate câmpurile trebuie completate." });
-    }
+      const {
+        id,
+        nume_ar,
+        nume_en,
+        nume,
+        descriere_ar,
+        descriere_en,
+        descriere,
+        tip,
+        categorie,
+      } = fields;
 
-    try {
       let query =
         "UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?";
       let queryParams = [
@@ -154,21 +143,28 @@ export default async function handler(req, res) {
         categorie,
       ];
 
-      // Încărcăm imaginea și fișierul tehnic pe Cloudinary dacă sunt furnizate
-      if (imagine) {
-        const imageUploadResult = await cloudinary.v2.uploader.upload(imagine, {
-          folder: "larbreapains/img",
-        });
+      // Încărcăm imaginea pe Cloudinary dacă este furnizată
+      if (files.imagine) {
+        const imageUploadResult = await cloudinary.v2.uploader.upload(
+          files.imagine.filepath,
+          {
+            folder: "larbreapains/img",
+          }
+        );
         const imageUrl = imageUploadResult.secure_url;
         query += ", imagine_produs = ?";
         queryParams.push(imageUrl);
       }
 
-      if (fiche) {
-        const ficheUploadResult = await cloudinary.v2.uploader.upload(fiche, {
-          folder: "larbreapains/fichetech",
-          resource_type: "raw",
-        });
+      // Încărcăm fișierul tehnic pe Cloudinary dacă este furnizat
+      if (files.fiche) {
+        const ficheUploadResult = await cloudinary.v2.uploader.upload(
+          files.fiche.filepath,
+          {
+            folder: "larbreapains/fichetech",
+            resource_type: "raw",
+          }
+        );
         const ficheUrl = ficheUploadResult.secure_url;
         query += ", fiche_tech = ?";
         queryParams.push(ficheUrl);
@@ -177,11 +173,15 @@ export default async function handler(req, res) {
       query += " WHERE id = ?";
       queryParams.push(id);
 
-      await dbconnection.execute(query, queryParams);
-      res.status(200).json({ message: "Produs actualizat" });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
+      try {
+        await dbconnection.execute(query, queryParams);
+        res.status(200).json({ message: "Produs actualizat" });
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      } finally {
+        await dbconnection.end();
+      }
+    });
   } else if (req.method === "DELETE") {
     const { id } = req.body;
 
@@ -197,8 +197,8 @@ export default async function handler(req, res) {
       res.status(200).json({ message: "Produs șters" });
     } catch (error) {
       res.status(500).json({ message: error.message });
+    } finally {
+      await dbconnection.end();
     }
   }
-
-  await dbconnection.end();
 }

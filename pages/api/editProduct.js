@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 import cloudinary from "cloudinary";
+import formidable from "formidable";
 
 // Configurare Cloudinary
 cloudinary.config({
@@ -10,7 +11,7 @@ cloudinary.config({
 
 export const config = {
   api: {
-    bodyParser: true,
+    bodyParser: false, // Dezactivează bodyParser-ul Next.js pentru a putea folosi formidable
   },
 };
 
@@ -53,60 +54,16 @@ export default async function handler(req, res) {
       res.status(500).json({ message: error.message });
     }
   } else if (req.method === "PUT") {
-    const {
-      id,
-      nume_ar,
-      nume_en,
-      nume,
-      descriere_ar,
-      descriere_en,
-      descriere,
-      tip,
-      categorie,
-      imagine, // Fișierul de imagine
-      fiche, // Fișierul tehnic
-    } = req.body;
+    const form = formidable({ multiples: true });
 
-    if (
-      !id ||
-      !nume_ar ||
-      !nume_en ||
-      !nume ||
-      !descriere_ar ||
-      !descriere_en ||
-      !descriere ||
-      !tip ||
-      !categorie ||
-      !imagine ||
-      !fiche
-    ) {
-      return res
-        .status(400)
-        .json({ message: "Toate câmpurile trebuie completate." });
-    }
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        res.status(500).json({ message: "Eroare la procesarea fișierelor." });
+        return;
+      }
 
-    try {
-      // Încărcăm imaginea pe Cloudinary în dosarul specificat
-      const imageUploadResult = await cloudinary.v2.uploader.upload(imagine, {
-        folder: "larbreapains/img", // Dosarul pentru imagini
-      });
-
-      // URL-ul imaginii încărcate pe Cloudinary
-      const imageUrl = imageUploadResult.secure_url;
-
-      // Încărcăm fișierul tehnic pe Cloudinary în dosarul specificat
-      const ficheUploadResult = await cloudinary.v2.uploader.upload(fiche, {
-        folder: "larbreapains/fichetech", // Dosarul pentru fișierele tehnice
-        resource_type: "raw", // Setăm tipul fișierului ca "raw" pentru a permite încărcarea altor tipuri decât imagini
-      });
-
-      // URL-ul fișierului tehnic încărcat pe Cloudinary
-      const ficheUrl = ficheUploadResult.secure_url;
-
-      // Actualizăm baza de date cu URL-urile imaginii și fișierului tehnic
-      const query =
-        "UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?, imagine_produs = ?, fiche_tech = ? WHERE id = ?";
-      await dbconnection.execute(query, [
+      const {
+        id,
         nume_ar,
         nume_en,
         nume,
@@ -115,14 +72,80 @@ export default async function handler(req, res) {
         descriere,
         tip,
         categorie,
-        imageUrl, // URL-ul imaginii de pe Cloudinary
-        ficheUrl, // URL-ul fișierului tehnic de pe Cloudinary
-        id,
-      ]);
-      res.status(200).json({ message: "Produs actualizat" });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
+      } = fields;
+
+      if (
+        !id ||
+        !nume_ar ||
+        !nume_en ||
+        !nume ||
+        !descriere_ar ||
+        !descriere_en ||
+        !descriere ||
+        !tip ||
+        !categorie
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Toate câmpurile trebuie completate." });
+      }
+
+      try {
+        let imageUrl = null;
+        let ficheUrl = null;
+
+        // Încărcăm imaginea pe Cloudinary dacă este furnizată
+        if (files.imagine) {
+          const imageUploadResult = await cloudinary.v2.uploader.upload(
+            files.imagine.filepath,
+            { folder: "larbreapains/img" }
+          );
+          imageUrl = imageUploadResult.secure_url;
+        }
+
+        // Încărcăm fișierul tehnic pe Cloudinary dacă este furnizat
+        if (files.fiche) {
+          const ficheUploadResult = await cloudinary.v2.uploader.upload(
+            files.fiche.filepath,
+            { folder: "larbreapains/fichetech", resource_type: "raw" }
+          );
+          ficheUrl = ficheUploadResult.secure_url;
+        }
+
+        // Construim interogarea SQL și parametrii
+        let query =
+          "UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?";
+        let queryParams = [
+          nume_ar,
+          nume_en,
+          nume,
+          descriere_ar,
+          descriere_en,
+          descriere,
+          tip,
+          categorie,
+        ];
+
+        if (imageUrl) {
+          query += ", imagine_produs = ?";
+          queryParams.push(imageUrl);
+        }
+
+        if (ficheUrl) {
+          query += ", fiche_tech = ?";
+          queryParams.push(ficheUrl);
+        }
+
+        query += " WHERE id = ?";
+        queryParams.push(id);
+
+        // Executăm interogarea de actualizare
+        await dbconnection.execute(query, queryParams);
+        res.status(200).json({ message: "Produs actualizat" });
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    });
   }
 
   await dbconnection.end();

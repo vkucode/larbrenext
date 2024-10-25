@@ -17,9 +17,9 @@ export default function EditProductPage() {
     descriere: '',
     tip: '',
     categorie: '',
-    imagine: '',
-    fiche: '',
   });
+  const [imageFile, setImageFile] = useState(null); // Stocăm imaginea selectată
+  const [ficheFile, setFicheFile] = useState(null); // Stocăm fișa tehnică selectată
   const router = useRouter();
   const { id } = useParams();
 
@@ -45,8 +45,6 @@ export default function EditProductPage() {
             descriere: data.product.descriere_produs,
             tip: data.product.tip_produs,
             categorie: data.product.categoria_produs,
-            imagine: data.product.imagine_produs,
-            fiche: data.product.fiche_tech,
           });
         }
       } catch (error) {
@@ -64,27 +62,32 @@ export default function EditProductPage() {
   const handleFileChange = (e, setter) => {
     const file = e.target.files[0];
     if (file) {
-      setter(file.name);
+      setter(file); // Stocăm fișierul selectat
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Dacă utilizatorul nu a ales o imagine sau o fișă tehnică nouă, trimitem `null` pentru a păstra valoarea actuală.
-    const updatedFormData = {
-        ...formData,
-        imagine: formData.imagine === product.imagine_produs ? null : formData.imagine,
-        fiche: formData.fiche === product.fiche_tech ? null : formData.fiche,
-    };
+    const updatedFormData = new FormData();
+    updatedFormData.append("id", id);
+    updatedFormData.append("nume_ar", formData.nume_ar);
+    updatedFormData.append("nume_en", formData.nume_en);
+    updatedFormData.append("nume", formData.nume);
+    updatedFormData.append("descriere_ar", formData.descriere_ar);
+    updatedFormData.append("descriere_en", formData.descriere_en);
+    updatedFormData.append("descriere", formData.descriere);
+    updatedFormData.append("tip", formData.tip);
+    updatedFormData.append("categorie", formData.categorie);
+
+    // Adăugăm imaginea și fișa tehnică doar dacă utilizatorul a selectat fișiere noi
+    if (imageFile) updatedFormData.append("imagine", imageFile);
+    if (ficheFile) updatedFormData.append("fiche", ficheFile);
 
     try {
         const response = await fetch(`https://www.larbreapains.fr/api/products`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id, ...updatedFormData }),
+            body: updatedFormData,
         });
 
         if (response.ok) {
@@ -95,7 +98,7 @@ export default function EditProductPage() {
     } catch (error) {
         console.error('Error:', error);
     }
-};
+  };
 
   if (!product) return <div>Loading...</div>;
 
@@ -206,14 +209,14 @@ export default function EditProductPage() {
           <label>Image de produit:</label>
           <div>
             <img
-              src={`https://larbreapains.fr/img/imgProducts/${formData.imagine}`}
+              src={product.imagine_produs}
               alt="Product Image"
               width={100}
             />
             <input
               type="file"
               name="imagine"
-              onChange={(e) => handleFileChange(e, (fileName) => setFormData({ ...formData, imagine: fileName }))}
+              onChange={(e) => handleFileChange(e, setImageFile)}
             />
           </div>
         </section>
@@ -222,7 +225,7 @@ export default function EditProductPage() {
           <label>Fiche technique:</label>
           <div>
             <a
-              href={`https://larbreapains.fr/ficheTechnique/${formData.fiche}`}
+              href={product.fiche_tech}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -231,7 +234,7 @@ export default function EditProductPage() {
             <input
               type="file"
               name="fiche"
-              onChange={(e) => handleFileChange(e, (fileName) => setFormData({ ...formData, fiche: fileName }))}
+              onChange={(e) => handleFileChange(e, setFicheFile)}
             />
           </div>
         </section>
