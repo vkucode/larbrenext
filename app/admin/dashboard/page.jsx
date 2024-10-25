@@ -71,7 +71,7 @@ export default function Dashboard() {
           <div key={product.id} className={styles.productItem}>
             <h1>{product.nume_produs}</h1>
             <Image 
-              src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}?t=${new Date().getTime()}`} 
+              src={product.imagine_produs} 
               alt={product.nume_produs} 
               width={150} 
               height={150} 
