@@ -74,18 +74,26 @@ export default async function handler(req, res) {
       // Încărcăm fișa tehnică pe Cloudinary
       if (files.fiche) {
         try {
+          // Verificăm dacă fișierul este de tip PDF
+          if (files.fiche.mimetype !== "application/pdf") {
+            return res.status(400).json({
+              message: "Seuls les fichiers PDF peuvent être téléchargés.",
+            });
+          }
+
           const ficheUploadResult = await cloudinary.v2.uploader.upload(
             files.fiche.filepath,
             {
               folder: "larbreapains/fichetech",
-              resource_type: "auto", // Setăm tipul fișierului ca "auto" pentru a permite alte tipuri
+              resource_type: "raw", // Setăm tipul fișierului la "raw" pentru PDF-uri
+              format: "pdf", // Asigurăm că formatul rămâne PDF
             }
           );
           ficheUrl = ficheUploadResult.secure_url;
         } catch (error) {
           return res
             .status(500)
-            .json({ message: "Technical file upload failed" });
+            .json({ message: "Échec du chargement de la fiche technique." });
         }
       }
 
@@ -106,23 +114,13 @@ export default async function handler(req, res) {
           ficheUrl,
         ]);
 
-        res.status(201).json({ message: "Produs adăugat cu succes" });
+        res.status(201).json({ message: "Produit ajouté avec succès" });
       } catch (error) {
         res.status(500).json({ message: error.message });
       } finally {
         await dbconnection.end();
       }
     });
-  } else if (req.method === "GET") {
-    try {
-      const query = "SELECT * FROM produits";
-      const [results] = await dbconnection.execute(query);
-      res.status(200).json({ products: results });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    } finally {
-      await dbconnection.end();
-    }
   } else if (req.method === "PUT") {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
@@ -172,32 +170,31 @@ export default async function handler(req, res) {
         }
       }
 
-      // Încărcăm fișierul tehnic pe Cloudinary dacă este furnizat
-      // Încărcăm fișa tehnică pe Cloudinary
+      // Încărcăm fișa tehnică pe Cloudinary dacă este furnizată
       if (files.fiche) {
         try {
           // Verificăm dacă fișierul este de tip PDF
           if (files.fiche.mimetype !== "application/pdf") {
-            return res
-              .status(400)
-              .json({
-                message: "Doar fișiere PDF sunt permise pentru încărcare.",
-              });
+            return res.status(400).json({
+              message: "Seuls les fichiers PDF peuvent être téléchargés.",
+            });
           }
 
           const ficheUploadResult = await cloudinary.v2.uploader.upload(
             files.fiche.filepath,
             {
               folder: "larbreapains/fichetech",
-              resource_type: "raw", // Setăm tipul fișierului la "raw" pentru PDF-uri
+              resource_type: "auto", // Setăm tipul fișierului la "raw" pentru PDF-uri
               format: "pdf", // Asigurăm că formatul rămâne PDF
             }
           );
-          ficheUrl = ficheUploadResult.secure_url;
+          const ficheUrl = ficheUploadResult.secure_url;
+          query += ", fiche_tech = ?";
+          queryParams.push(ficheUrl);
         } catch (error) {
           return res
             .status(500)
-            .json({ message: "Încărcarea fișei tehnice a eșuat." });
+            .json({ message: "Échec du chargement de la fiche technique." });
         }
       }
 
@@ -213,26 +210,5 @@ export default async function handler(req, res) {
         await dbconnection.end();
       }
     });
-  } else if (req.method === "DELETE") {
-    const { id } = req.body;
-
-    if (!id) {
-      return res
-        .status(400)
-        .json({ message: "ID-ul produsului este necesar." });
-    }
-
-    try {
-      const query = "DELETE FROM produits WHERE id = ?";
-      await dbconnection.execute(query, [id]);
-      res.status(200).json({ message: "Produs șters" });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    } finally {
-      await dbconnection.end();
-    }
-  } else {
-    res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
