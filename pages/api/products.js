@@ -29,7 +29,7 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   const dbconnection = await mysql.createConnection({
-    host: "localhost",
+    host: "127.0.0.1",
     database: "larbreapains",
     user: "larbreapains",
     password: "adminVku23#",
