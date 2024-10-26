@@ -66,7 +66,12 @@ export default async function handler(req, res) {
       if (files.imagine) {
         try {
           const filePath = files.imagine.filepath;
-          const imageUploadResult = await uploadToGCS(filePath, "img");
+          const contentType = files.imagine.mimetype;
+          const imageUploadResult = await uploadToGCS(
+            filePath,
+            "img",
+            contentType
+          );
           imageUrl = imageUploadResult;
         } catch (error) {
           console.error("Image upload error:", error);
@@ -83,12 +88,13 @@ export default async function handler(req, res) {
             });
           }
           const filePath = files.fiche.filepath;
-          ficheUrl = await uploadToGCS(filePath, "fichetech");
+          const contentType = files.fiche.mimetype;
+          ficheUrl = await uploadToGCS(filePath, "fichetech", contentType);
         } catch (error) {
           console.error("Fiche upload error:", error);
-          return res
-            .status(500)
-            .json({ message: "Échec du chargement de la fiche technique." });
+          return res.status(500).json({
+            message: "Échec du chargement de la fiche technique.",
+          });
         }
       }
 
@@ -133,14 +139,16 @@ export default async function handler(req, res) {
 }
 
 // Funcție pentru încărcarea fișierelor pe Google Cloud Storage
-async function uploadToGCS(filePath, folder) {
+async function uploadToGCS(filePath, folder, contentType) {
   const fileName = `${folder}/${Date.now()}_${path.basename(filePath)}`;
   try {
     await storage.bucket(bucketName).upload(filePath, {
       destination: fileName,
-      metadata: { cacheControl: "public, max-age=31536000" },
+      metadata: {
+        contentType, // Setăm tipul de conținut
+        cacheControl: "public, max-age=31536000",
+      },
     });
-    const file = storage.bucket(bucketName).file(fileName);
     return `https://storage.googleapis.com/${bucketName}/${fileName}`;
   } catch (error) {
     console.error("File upload error to GCS:", error.message); // Eroare detaliată
