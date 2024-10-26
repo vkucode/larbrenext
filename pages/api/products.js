@@ -29,10 +29,10 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   const dbconnection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+    host: "localhost",
+    database: "larbreapains",
+    user: "larbreapains",
+    password: "adminVku23#",
   });
 
   if (req.method === "OPTIONS") {
