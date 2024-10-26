@@ -230,10 +230,11 @@ async function uploadToGCS(filePath, folder) {
   const fileName = `${folder}/${Date.now()}_${path.basename(filePath)}`;
   await storage.bucket(bucketName).upload(filePath, {
     destination: fileName,
+    public: true, // Setăm fișierul ca fiind public
     metadata: {
       cacheControl: "public, max-age=31536000",
     },
   });
   const file = storage.bucket(bucketName).file(fileName);
-  return file.publicUrl();
+  return `https://storage.googleapis.com/${bucketName}/${fileName}`; // URL public direct
 }
