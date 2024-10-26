@@ -144,8 +144,7 @@ async function uploadToGCS(filePath, folder) {
     const file = storage.bucket(bucketName).file(fileName);
     return `https://storage.googleapis.com/${bucketName}/${fileName}`;
   } catch (error) {
-    console.error("File upload error to GCS:", error.message);
-    console.error("Details:", error);
+    console.error("File upload error to GCS:", error.message); // Eroare detaliată
     throw new Error("File upload error to GCS");
   }
 }
