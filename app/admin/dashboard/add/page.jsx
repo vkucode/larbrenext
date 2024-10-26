@@ -46,7 +46,7 @@ export default function AddProduct() {
     formData.append("fiche", fiche);
 
     try {
-      const response = await fetch('https://www.larbreapains.fr/api/products', {
+      const response = await fetch('/api/products', {
         method: 'POST',
         body: formData,
       });
