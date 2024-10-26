@@ -27,12 +27,12 @@ export default function AddProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!nume_ar || !nume || !nume_en || !descriere_ar || !descriere_en || !descriere || !tip || !categorie || !imagine || !fiche) {
       setMessage('Tous les champs doivent être remplis.');
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("nume_ar", nume_ar);
     formData.append("nume_en", nume_en);
@@ -44,25 +44,28 @@ export default function AddProduct() {
     formData.append("categorie", categorie);
     formData.append("imagine", imagine);
     formData.append("fiche", fiche);
-
+  
     try {
       const response = await fetch('/api/products', {
         method: 'POST',
         body: formData,
       });
-
+  
       if (response.ok) {
         setMessage('Le produit a été ajouté avec succès.');
         setTimeout(() => {
           router.push('/admin/dashboard');
         }, 1500);
       } else {
-        setMessage('Adăugarea produsului a eșuat.');
+        const errorData = await response.json();
+        setMessage(`Adăugarea produsului a eșuat: ${errorData.message}`);
       }
     } catch (error) {
+      console.error("Fetch error:", error);
       setMessage('A apărut o eroare neașteptată.');
     }
   };
+  
 
   const handleFileChange = (e, setter) => {
     const file = e.target.files[0];
