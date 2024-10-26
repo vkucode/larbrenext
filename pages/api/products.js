@@ -1,13 +1,18 @@
 import mysql from "mysql2/promise";
-import cloudinary from "cloudinary";
 import formidable from "formidable";
+import { Storage } from "@google-cloud/storage";
+import path from "path";
 
-// Configurare Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+// Configurare Google Cloud Storage
+const storage = new Storage({
+  projectId: process.env.GCS_PROJECT_ID,
+  credentials: {
+    client_email: process.env.GCS_CLIENT_EMAIL,
+    private_key: process.env.GCS_SECRET_KEY.replace(/\\n/g, "\n"), // înlocuiește \\n cu newline real
+  },
 });
+
+const bucketName = process.env.GCS_BUCKET_NAME;
 
 export const config = {
   api: {
@@ -24,10 +29,10 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   const dbconnection = await mysql.createConnection({
-    host: "localhost",
-    database: "larbreapains",
-    user: "larbreapains",
-    password: "adminVku23#",
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
   });
 
   if (req.method === "OPTIONS") {
@@ -54,61 +59,29 @@ export default async function handler(req, res) {
       } = fields;
 
       let imageUrl = null;
-      let ficheUrls = [];
+      let ficheUrl = null;
 
-      // Încărcăm imaginea pe Cloudinary
+      // Încărcăm imaginea pe Google Cloud Storage
       if (files.imagine) {
         try {
-          const imageUploadResult = await cloudinary.v2.uploader.upload(
-            files.imagine.filepath,
-            {
-              folder: "larbreapains/img",
-            }
-          );
-          imageUrl = imageUploadResult.secure_url;
+          const filePath = files.imagine.filepath;
+          const imageUploadResult = await uploadToGCS(filePath, "img");
+          imageUrl = imageUploadResult;
         } catch (error) {
           return res.status(500).json({ message: "Image upload failed" });
         }
       }
 
-      // Încărcăm fișa tehnică și o transformăm în imagini pe pagină
+      // Încărcăm PDF-ul ca un fișier complet, fără modificări
       if (files.fiche) {
         try {
-          // Verificăm dacă fișierul este de tip PDF
           if (files.fiche.mimetype !== "application/pdf") {
             return res.status(400).json({
               message: "Seuls les fichiers PDF peuvent être téléchargés.",
             });
           }
-
-          // Încarcă fișierul PDF
-          const uploadResult = await cloudinary.v2.uploader.upload(
-            files.fiche.filepath,
-            {
-              folder: "larbreapains/fichetech",
-              public_id: `fiche_${Date.now()}`, // Creăm un ID unic pentru fișier
-              resource_type: "raw",
-            }
-          );
-
-          // Explodăm fișierul PDF în imagini pentru fiecare pagină
-          await cloudinary.v2.uploader.explicit(uploadResult.public_id, {
-            type: "upload",
-            resource_type: "image",
-            eager: [{ page: "all" }],
-            eager_async: false,
-          });
-
-          // Adunăm toate URL-urile imaginilor rezultate
-          const ficheImages = await cloudinary.v2.api.resources({
-            type: "upload",
-            prefix: uploadResult.public_id,
-            resource_type: "image",
-          });
-
-          ficheUrls = ficheImages.resources.map(
-            (resource) => resource.secure_url
-          );
+          const filePath = files.fiche.filepath;
+          ficheUrl = await uploadToGCS(filePath, "fichetech");
         } catch (error) {
           return res
             .status(500)
@@ -130,12 +103,11 @@ export default async function handler(req, res) {
           tip,
           categorie,
           imageUrl,
-          JSON.stringify(ficheUrls), // Salvăm toate URL-urile imaginilor într-un JSON
+          ficheUrl,
         ]);
-
         res
           .status(201)
-          .json({ message: "Produit ajouté avec succès", ficheUrls });
+          .json({ message: "Produit ajouté avec succès", ficheUrl });
       } catch (error) {
         res.status(500).json({ message: error.message });
       } finally {
@@ -184,63 +156,32 @@ export default async function handler(req, res) {
         categorie,
       ];
 
-      // Încărcăm imaginea pe Cloudinary dacă este furnizată
       if (files.imagine) {
         try {
-          const imageUploadResult = await cloudinary.v2.uploader.upload(
+          const imageUploadResult = await uploadToGCS(
             files.imagine.filepath,
-            {
-              folder: "larbreapains/img",
-            }
+            "img"
           );
-          const imageUrl = imageUploadResult.secure_url;
           query += ", imagine_produs = ?";
-          queryParams.push(imageUrl);
+          queryParams.push(imageUploadResult);
         } catch (error) {
           return res.status(500).json({ message: "Image upload failed" });
         }
       }
 
-      // Încărcăm fișa tehnică pe Cloudinary dacă este furnizată
       if (files.fiche) {
         try {
-          // Verificăm dacă fișierul este de tip PDF
           if (files.fiche.mimetype !== "application/pdf") {
             return res.status(400).json({
               message: "Seuls les fichiers PDF peuvent être téléchargés.",
             });
           }
-
-          // Încarcă fișierul PDF
-          const uploadResult = await cloudinary.v2.uploader.upload(
+          const ficheUploadResult = await uploadToGCS(
             files.fiche.filepath,
-            {
-              folder: "larbreapains/fichetech",
-              public_id: `fiche_${Date.now()}`,
-              resource_type: "raw",
-            }
-          );
-
-          // Explodăm fișierul PDF în imagini pentru fiecare pagină
-          await cloudinary.v2.uploader.explicit(uploadResult.public_id, {
-            type: "upload",
-            resource_type: "image",
-            eager: [{ page: "all" }],
-            eager_async: false,
-          });
-
-          // Adunăm toate URL-urile imaginilor rezultate
-          const ficheImages = await cloudinary.v2.api.resources({
-            type: "upload",
-            prefix: uploadResult.public_id,
-            resource_type: "image",
-          });
-
-          const ficheUrls = ficheImages.resources.map(
-            (resource) => resource.secure_url
+            "fichetech"
           );
           query += ", fiche_tech = ?";
-          queryParams.push(JSON.stringify(ficheUrls));
+          queryParams.push(ficheUploadResult);
         } catch (error) {
           return res
             .status(500)
@@ -282,4 +223,17 @@ export default async function handler(req, res) {
     res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE", "PATCH"]);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
+}
+
+// Funcție pentru încărcarea fișierelor pe Google Cloud Storage
+async function uploadToGCS(filePath, folder) {
+  const fileName = `${folder}/${Date.now()}_${path.basename(filePath)}`;
+  await storage.bucket(bucketName).upload(filePath, {
+    destination: fileName,
+    metadata: {
+      cacheControl: "public, max-age=31536000",
+    },
+  });
+  const file = storage.bucket(bucketName).file(fileName);
+  return file.publicUrl();
 }
