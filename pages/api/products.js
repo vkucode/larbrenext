@@ -78,11 +78,9 @@ export default async function handler(req, res) {
       if (files.fiche) {
         try {
           if (files.fiche.mimetype !== "application/pdf") {
-            return res
-              .status(400)
-              .json({
-                message: "Seuls les fichiers PDF peuvent être téléchargés.",
-              });
+            return res.status(400).json({
+              message: "Seuls les fichiers PDF peuvent être téléchargés.",
+            });
           }
           const filePath = files.fiche.filepath;
           ficheUrl = await uploadToGCS(filePath, "fichetech");
@@ -146,7 +144,8 @@ async function uploadToGCS(filePath, folder) {
     const file = storage.bucket(bucketName).file(fileName);
     return `https://storage.googleapis.com/${bucketName}/${fileName}`;
   } catch (error) {
-    console.error("File upload error to GCS:", error);
+    console.error("File upload error to GCS:", error.message);
+    console.error("Details:", error);
     throw new Error("File upload error to GCS");
   }
 }
