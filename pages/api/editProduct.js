@@ -1,17 +1,21 @@
 import mysql from "mysql2/promise";
-import cloudinary from "cloudinary";
 import formidable from "formidable";
+import { Storage } from "@google-cloud/storage";
 
-// Configurare Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+// Configurare Google Cloud Storage
+const storage = new Storage({
+  projectId: process.env.GCS_PROJECT_ID,
+  credentials: {
+    client_email: process.env.GCS_CLIENT_EMAIL,
+    private_key: process.env.GCS_SECRET_KEY.replace(/\\n/g, "\n"),
+  },
 });
+
+const bucketName = process.env.GCS_BUCKET_NAME;
 
 export const config = {
   api: {
-    bodyParser: false, // Dezactivează bodyParser-ul Next.js pentru a putea folosi formidable
+    bodyParser: false, // Dezactivăm bodyParser pentru a folosi formidable
   },
 };
 
@@ -94,22 +98,24 @@ export default async function handler(req, res) {
         let imageUrl = null;
         let ficheUrl = null;
 
-        // Încărcăm imaginea pe Cloudinary dacă este furnizată
+        // Încărcăm imaginea pe Google Cloud Storage dacă este furnizată
         if (files.imagine) {
-          const imageUploadResult = await cloudinary.v2.uploader.upload(
-            files.imagine.filepath,
-            { folder: "larbreapains/img" }
-          );
-          imageUrl = imageUploadResult.secure_url;
+          const filePath = files.imagine.filepath;
+          const contentType = files.imagine.mimetype;
+          const fileName = `img/${Date.now()}_${
+            files.imagine.originalFilename
+          }`;
+          imageUrl = await uploadToGCS(filePath, fileName, contentType);
         }
 
-        // Încărcăm fișierul tehnic pe Cloudinary dacă este furnizat
+        // Încărcăm fișierul tehnic pe Google Cloud Storage dacă este furnizat
         if (files.fiche) {
-          const ficheUploadResult = await cloudinary.v2.uploader.upload(
-            files.fiche.filepath,
-            { folder: "larbreapains/fichetech", resource_type: "raw" }
-          );
-          ficheUrl = ficheUploadResult.secure_url;
+          const filePath = files.fiche.filepath;
+          const contentType = files.fiche.mimetype;
+          const fileName = `fichetech/${Date.now()}_${
+            files.fiche.originalFilename
+          }`;
+          ficheUrl = await uploadToGCS(filePath, fileName, contentType);
         }
 
         // Construim interogarea SQL și parametrii
@@ -149,4 +155,21 @@ export default async function handler(req, res) {
   }
 
   await dbconnection.end();
+}
+
+// Funcție pentru încărcarea fișierelor pe Google Cloud Storage
+async function uploadToGCS(filePath, fileName, contentType) {
+  try {
+    await storage.bucket(bucketName).upload(filePath, {
+      destination: fileName,
+      metadata: {
+        contentType,
+        cacheControl: "public, max-age=31536000",
+      },
+    });
+    return `https://storage.googleapis.com/${bucketName}/${fileName}`;
+  } catch (error) {
+    console.error("File upload error to GCS:", error.message);
+    throw new Error("File upload error to GCS");
+  }
 }
