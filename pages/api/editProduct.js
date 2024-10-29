@@ -59,78 +59,75 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "PUT") {
     console.log("Started PUT request");
-    const form = new formidable.IncomingForm({ maxFileSize: 10 * 1024 * 1024 }); // Limita mărimii fișierelor la 10MB
+    const form = new formidable.IncomingForm({ maxFileSize: 10 * 1024 * 1024 });
 
     form.parse(req, async (err, fields, files) => {
       if (err) {
-        res.status(500).json({ message: "Eroare la procesarea fișierelor." });
-        return;
-      }
-
-      const {
-        id,
-        nume_ar,
-        nume_en,
-        nume,
-        descriere_ar,
-        descriere_en,
-        descriere,
-        tip,
-        categorie,
-      } = fields;
-
-      if (
-        !id ||
-        !nume_ar ||
-        !nume_en ||
-        !nume ||
-        !descriere_ar ||
-        !descriere_en ||
-        !descriere ||
-        !tip ||
-        !categorie
-      ) {
+        console.error("File parsing error:", err);
         return res
-          .status(400)
-          .json({ message: "Toate câmpurile trebuie completate." });
+          .status(500)
+          .json({ message: "Eroare la procesarea fișierelor." });
       }
+
+      console.log("Fields parsed:", fields);
+      console.log("Files parsed:", files);
 
       try {
+        const {
+          id,
+          nume_ar,
+          nume_en,
+          nume,
+          descriere_ar,
+          descriere_en,
+          descriere,
+          tip,
+          categorie,
+        } = fields;
+
+        if (
+          !id ||
+          !nume_ar ||
+          !nume_en ||
+          !nume ||
+          !descriere_ar ||
+          !descriere_en ||
+          !descriere ||
+          !tip ||
+          !categorie
+        ) {
+          console.error("Missing fields in the request");
+          return res
+            .status(400)
+            .json({ message: "Toate câmpurile trebuie completate." });
+        }
+
         let imageUrl = null;
         let ficheUrl = null;
 
-        // Încărcăm imaginea pe Google Cloud Storage dacă este furnizată
+        // Log pentru încărcarea imaginii
         if (files.imagine) {
-          const filePath = files.imagine.filepath;
-          const contentType = files.imagine.mimetype;
-          const fileName = `img/${Date.now()}_${
-            files.imagine.originalFilename
-          }`;
-          imageUrl = await uploadToGCS(filePath, fileName, contentType);
+          console.log("Image file provided:", files.imagine);
+          imageUrl = await uploadToGCS(
+            files.imagine.filepath,
+            `img/${Date.now()}_${files.imagine.originalFilename}`,
+            files.imagine.mimetype
+          );
         }
 
-        // Încărcăm fișierul tehnic pe Google Cloud Storage dacă este furnizat
+        // Log pentru încărcarea fișei tehnice
         if (files.fiche) {
-          const filePath = files.fiche.filepath;
-          const contentType = files.fiche.mimetype;
-          const fileName = `fichetech/${Date.now()}_${
-            files.fiche.originalFilename
-          }`;
-          ficheUrl = await uploadToGCS(filePath, fileName, contentType);
+          console.log("Technical file provided:", files.fiche);
+          ficheUrl = await uploadToGCS(
+            files.fiche.filepath,
+            `fichetech/${Date.now()}_${files.fiche.originalFilename}`,
+            files.fiche.mimetype
+          );
         }
 
-        // Construim interogarea SQL și parametrii
-        let query = `
-          UPDATE produits 
-          SET 
-            nume_produs_ar = ?, 
-            nume_produs_en = ?, 
-            nume_produs = ?, 
-            descriere_produs_ar = ?, 
-            descriere_produs_en = ?, 
-            descriere_produs = ?, 
-            tip_produs = ?, 
-            categoria_produs = ?`;
+        // Log pentru query SQL
+        console.log("Building SQL query...");
+        let query = `UPDATE produits SET nume_produs_ar = ?, nume_produs_en = ?, nume_produs = ?, descriere_produs_ar = ?, descriere_produs_en = ?, descriere_produs = ?, tip_produs = ?, categoria_produs = ?`;
         let queryParams = [
           nume_ar,
           nume_en,
@@ -155,10 +152,11 @@ export default async function handler(req, res) {
         query += " WHERE id = ?";
         queryParams.push(id);
 
-        // Executăm interogarea de actualizare
+        console.log("Executing SQL query with params:", queryParams);
         await dbconnection.execute(query, queryParams);
         res.status(200).json({ message: "Produs actualizat" });
       } catch (error) {
+        console.error("Database update error:", error.message);
         res.status(500).json({ message: error.message });
       }
     });
