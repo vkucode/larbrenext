@@ -165,9 +165,9 @@ export default async function handler(req, res) {
   await dbconnection.end();
 }
 
-// Funcție pentru încărcarea fișierelor pe Google Cloud Storage
 async function uploadToGCS(filePath, fileName, contentType) {
   try {
+    console.log("Uploading file to GCS:", fileName);
     await storage.bucket(bucketName).upload(filePath, {
       destination: fileName,
       metadata: {
@@ -175,6 +175,7 @@ async function uploadToGCS(filePath, fileName, contentType) {
         cacheControl: "public, max-age=31536000",
       },
     });
+    console.log("File uploaded successfully:", fileName);
     return `https://storage.googleapis.com/${bucketName}/${fileName}`;
   } catch (error) {
     console.error("File upload error to GCS:", error.message);
