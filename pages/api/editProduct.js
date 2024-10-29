@@ -58,6 +58,7 @@ export default async function handler(req, res) {
       res.status(500).json({ message: error.message });
     }
   } else if (req.method === "PUT") {
+    console.log("Started PUT request");
     const form = new formidable.IncomingForm({ maxFileSize: 10 * 1024 * 1024 }); // Limita mărimii fișierelor la 10MB
 
     form.parse(req, async (err, fields, files) => {

@@ -85,10 +85,10 @@ export default function EditProductPage() {
     if (ficheFile) updatedFormData.append("fiche", ficheFile);
 
     try {
-        const response = await fetch(`https://www.larbreapains.fr/api/products`, {
-            method: 'PUT',
-            body: updatedFormData,
-        });
+        const response = await fetch(`https://www.larbreapains.fr/api/editProduct?id=${id}`, {
+          method: 'PUT',
+          body: updatedFormData,
+      });
 
         if (response.ok) {
             router.push('/admin/dashboard');
