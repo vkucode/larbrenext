@@ -50,12 +50,12 @@ export default function Pain() {
       <div className={styles.catalogProducts}>
         {filteredProducts.map((product) => (
             <div key={product.id} className={styles.productCard} onClick={() => handleProductClick(product)}>
-            <h1>{product.nume_produs}</h1>
+            <h1>{product.nume_produs_en}</h1>
             <Image
-                src={`https://larbreapains.fr/img/imgProducts/${product.imagine_produs}`}
+                src={`${product.imagine_produs}`}
                 width={400}
                 height={400}
-                alt={product.nume_produs}
+                alt={product.nume_produs_en}
             />
             </div>
         ))}
@@ -67,7 +67,7 @@ export default function Pain() {
             <Image src="/img/logow.png" width={200} height={200} alt="L'arbre A Pains" className={styles.popupLogo} />
             <div className={styles.popupImg}>
               <Image
-                    src={`https://larbreapains.fr/img/imgProducts/${selectedProduct.imagine_produs}`}
+                    src={`${selectedProduct.imagine_produs}`}
                     width={400}
                     height={400}
                     alt={selectedProduct.nume_produs}
@@ -77,9 +77,9 @@ export default function Pain() {
 
             <div className={styles.popupText}>
               <button onClick={handleClosePopup} className={styles.closeButton}><HiXMark /></button>
-              <h1>{selectedProduct.nume_produs}</h1>
-              <p>{selectedProduct.descriere_produs}</p>
-              <a href={`https://larbreapains.fr/ficheTechnique/${selectedProduct.fiche_tech}`}>Fiche technique</a>
+              <h1>{selectedProduct.nume_produs_en}</h1>
+              <p>{selectedProduct.descriere_produs_en}</p>
+              <a href={`${selectedProduct.fiche_tech}`}>Fiche technique</a>
             </div>
             
 
