@@ -61,7 +61,7 @@ export default function Dashboard() {
         <h1>Product Dashboard</h1>
         {/* Adăugăm funcționalitate pentru filtrarea produselor */}
         <button onClick={() => handleTypeSelection('Cuit')}>Cuit</button>
-        <button onClick={() => handleTypeSelection('Surgeler')}>Surgeler</button>
+        <button onClick={() => handleTypeSelection('Surgeler')}>Surgelé</button>
         <button onClick={() => handleTypeSelection('Traiteur')}>Traiteur</button>
         <button onClick={() => handleTypeSelection('')}>Tous</button> {/* Buton pentru a reseta filtrarea */}
         <Link href="/admin/dashboard/add"><button>Ajouter&nbsp;<TbPlus /></button></Link>

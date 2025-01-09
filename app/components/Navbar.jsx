@@ -53,7 +53,7 @@ const NavLeft = ({ setIsOpen }) => {
       </motion.button>
       <Logo />
       <NavLink text="Cuit" linksite="/fr/cuit" />
-      <NavLink text="Surgeler" linksite="/fr/surgeler" />
+      <NavLink text="Surgelé" linksite="/fr/surgeler" />
       <NavLink text="Traiteur" linksite="/fr/traiteur" />
     </div>
   );
@@ -103,7 +103,7 @@ const NavMenu = ({ isOpen }) => {
       className={`${styles.navBar} absolute py-3 shadow-lg left-0 right-0 top-full origin-top flex flex-col gap-3`}
     >
       <MenuLink text="Cuit" linksite="/fr/cuit" />
-      <MenuLink text="Surgeler" linksite="/fr/surgeler" />
+      <MenuLink text="Surgelé" linksite="/fr/surgeler" />
       <MenuLink text="Traiteur" linksite="/fr/traiteur" />
       <MenuLink text="Nous Contacter" linksite="/fr/#contact" />
     </motion.div>

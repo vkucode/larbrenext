@@ -49,10 +49,9 @@
                 @apply absolute w-full h-full object-cover;
             }
             h1{
-                @apply absolute bottom-[0px] pb-5 pt-2 bg-black bg-opacity-55 uppercase z-20 px-2 text-xs md:text-sm lg:text-lg w-full text-center left-[50%] font-semibold translate-x-[-50%];
+                @apply absolute bottom-[0px] pb-5 pt-2 bg-transparent uppercase z-20 px-2 text-xs md:text-sm lg:text-lg w-full text-center left-[50%] font-semibold translate-x-[-50%];
                 font-family: 'Quattrocento';
-                box-shadow: 0px 0px 30px 0px rgba($color: #000000, $alpha: 1);
-                color: var(--color-main-light);
+                color: var(--color-dark);
             }
         }
     }
