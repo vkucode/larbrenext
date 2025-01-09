@@ -181,7 +181,7 @@ export default function EditProductPage() {
             <select name="tip" id="tip" required value={formData.tip} onChange={handleInputChange}>
               <option value="">Sélectionnez le type</option>
               <option value="Cuit">Cuit</option>
-              <option value="Surgeler">Surgeler</option>
+              <option value="Surgeler">Surgelé</option>
               <option value="Traiteur">Traiteur</option>
             </select>
           </div>

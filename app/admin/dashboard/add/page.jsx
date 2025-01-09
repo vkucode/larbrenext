@@ -129,7 +129,7 @@ export default function AddProduct() {
           <select name="type" id="type" required value={tip} onChange={(e) => setTip(e.target.value)}>
             <option value="">Sélectionnez le type</option>
             <option value="Cuit">Cuit</option>
-            <option value="Surgeler">Surgeler</option>
+            <option value="Surgeler">Surgelé</option>
             <option value="Traiteur">Traiteur</option>
           </select>
           <select name="categorie" id="categorie" required value={categorie} onChange={(e) => setCategorie(e.target.value)}>
