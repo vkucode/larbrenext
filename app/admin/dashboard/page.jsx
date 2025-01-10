@@ -4,11 +4,12 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './general.module.scss';
-import { TbEdit, TbTrash, TbPlus } from "react-icons/tb";
+import { TbEdit, TbTrash, TbPlus, TbFileText } from "react-icons/tb";
 
 export default function Dashboard() {
   const [products, setProducts] = useState([]);
-  const [selectedType, setSelectedType] = useState(''); // State pentru tipul selectat
+  const [selectedType, setSelectedType] = useState('');
+  const [filterNoTechFile, setFilterNoTechFile] = useState(false); // Filtru pentru produse fără fișă tehnică
   const router = useRouter();
 
   const fetchProducts = async () => {
@@ -26,12 +27,26 @@ export default function Dashboard() {
   }, []);
 
   const handleTypeSelection = (type) => {
-    setSelectedType(type); // Setăm tipul selectat
+    setSelectedType(type);
+    setFilterNoTechFile(false); // Resetăm filtrul "fără fișă tehnică" când selectăm un tip
   };
 
-  const filteredProducts = selectedType
-    ? products.filter(product => product.tip_produs === selectedType) // Filtrăm produsele după tip
-    : products;
+  const toggleNoTechFileFilter = () => {
+    setFilterNoTechFile((prev) => !prev);
+    setSelectedType(''); // Resetăm tipul selectat când activăm filtrul "fără fișă tehnică"
+  };
+
+  const filteredProducts = products.filter((product) => {
+    if (filterNoTechFile) {
+      // Filtrăm doar produsele fără fișă tehnică sau cu link-ul specific
+      return (
+        !product.fiche_tech ||
+        product.fiche_tech.includes('https://www.larbreapains.fr/ficheTechnique/')
+      );
+    }
+    // Filtrăm produsele după tip, dacă este selectat unul
+    return selectedType ? product.tip_produs === selectedType : true;
+  });
 
   const deleteProduct = async (id) => {
     const confirmed = confirm('Est-ce que vous êtes sûr de vouloir supprimer ce produit?');
@@ -57,13 +72,15 @@ export default function Dashboard() {
 
   return (
     <section className={styles.dashboard}>
-      <div className='flex flex-row justify-between items-center w-full max-w-6xl'>
+      <div className='flex flex-row flex-wrap justify-between items-center w-full max-w-6xl'>
         <h1>Product Dashboard</h1>
-        {/* Adăugăm funcționalitate pentru filtrarea produselor */}
         <button onClick={() => handleTypeSelection('Cuit')}>Cuit</button>
         <button onClick={() => handleTypeSelection('Surgeler')}>Surgelé</button>
         <button onClick={() => handleTypeSelection('Traiteur')}>Traiteur</button>
-        <button onClick={() => handleTypeSelection('')}>Tous</button> {/* Buton pentru a reseta filtrarea */}
+        <button onClick={() => handleTypeSelection('')}>Tous</button>
+        <button onClick={toggleNoTechFileFilter}>
+          {filterNoTechFile ? 'Voir tous les produits' : 'Sans fiche technique'}
+        </button>
         <Link href="/admin/dashboard/add"><button>Ajouter&nbsp;<TbPlus /></button></Link>
       </div>
       <div className={styles.productList}>
@@ -79,6 +96,19 @@ export default function Dashboard() {
             <div className={styles.controlBtns}>
               <Link href={`/admin/dashboard/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
               <button onClick={() => deleteProduct(product.id)}>Delete&nbsp;<TbTrash /></button>
+              {/* Adăugăm iconul fișei tehnice cu verificare suplimentară */}
+              {product.fiche_tech &&
+                !product.fiche_tech.includes('https://www.larbreapains.fr/ficheTechnique/') && (
+                  <a 
+                    href={product.fiche_tech} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className={styles.fileIcon}
+                    title="Voir la fiche technique"
+                  >
+                    <TbFileText />
+                  </a>
+                )}
             </div>
           </div>
         ))}
