@@ -44,7 +44,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Răspuns de succes fără creare de sesiune
+    // Răspuns de succes
     return res.status(200).json({ message: "Authentication successful" });
   } catch (error) {
     console.error("Error during login:", error.message);

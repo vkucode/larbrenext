@@ -14,27 +14,32 @@ export default function Admin() {
   const router = useRouter();
 
   useEffect(() => {
-    // Verificăm dacă utilizatorul are deja un token
+    // Verificăm dacă utilizatorul are deja un token valid
     const checkSession = async () => {
-      const response = await fetch('/api/check-session');
-      if (response.ok) {
-        router.push('/admin/dashboard');
+      try {
+        const response = await fetch('/api/check-session');
+        if (response.ok) {
+          router.push('/admin/dashboard'); // Dacă există o sesiune activă, redirecționăm
+        }
+      } catch (error) {
+        console.error('Session check error:', error);
       }
     };
 
     checkSession();
-  }, []);
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    setError(''); // Resetăm eroarea
+
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user: login, pass }),
       });
-  
+
       if (response.ok) {
         router.push('/admin/dashboard'); // Redirecționăm la dashboard
       } else {
