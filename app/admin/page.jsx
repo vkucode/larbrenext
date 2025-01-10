@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './admin.module.scss';
 import Image from 'next/image';
@@ -13,12 +13,24 @@ export default function Admin() {
   const [error, setError] = useState('');
   const router = useRouter();
 
+  useEffect(() => {
+    // Verificăm dacă utilizatorul are deja un token
+    const checkSession = async () => {
+      const response = await fetch('/api/check-session');
+      if (response.ok) {
+        router.push('/admin/dashboard');
+      }
+    };
+
+    checkSession();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     try {
-      const response = await fetch('https://larbreapains.fr/api/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user: login, pass }),

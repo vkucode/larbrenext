@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <GoogleAnalytics trackingId="G-YLSK8Z9KJ3" />
       <body className={inter.className}>
         <Navbar />
