@@ -27,22 +27,22 @@ export default function Admin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
+  
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user: login, pass }),
       });
-
+  
       if (response.ok) {
-        router.push('/admin/dashboard');
+        router.push('/admin/dashboard'); // Redirecționăm la dashboard
       } else {
-        const data = await response.json();
-        setError(data.message || 'Login failed');
+        const errorData = await response.json();
+        setError(errorData.message || 'Authentication failed');
       }
     } catch (error) {
+      console.error('Login error:', error);
       setError('An unexpected error occurred');
     }
   };

@@ -1,8 +1,4 @@
 import mysql from "mysql2/promise";
-import jwt from "jsonwebtoken";
-
-const SECRET_KEY = process.env.SECRET_KEY; // Asigură-te că această cheie este setată corect în .env
-const COOKIE_NAME = "admin_token";
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -48,17 +44,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Crearea token-ului JWT
-    const token = jwt.sign({ userId: userRecord.id }, SECRET_KEY, {
-      expiresIn: "3h",
-    });
-
-    // Setare cookie pentru sesiune
-    res.setHeader(
-      "Set-Cookie",
-      `${COOKIE_NAME}=${token}; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=10800;`
-    );
-
+    // Răspuns de succes fără creare de sesiune
     return res.status(200).json({ message: "Authentication successful" });
   } catch (error) {
     console.error("Error during login:", error.message);
