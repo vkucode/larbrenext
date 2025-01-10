@@ -25,13 +25,16 @@ export default function Admin() {
         body: JSON.stringify({ user: login, pass }),
       });
 
-      if (response.ok) {
-        // Dacă răspunsul este de succes, redirecționăm utilizatorul
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Setăm sesiunea în localStorage
+        localStorage.setItem('sessiontrue', 'true');
+        // Redirecționăm utilizatorul
         router.push('/admin/dashboard');
       } else {
         // Dacă autentificarea eșuează, afișăm eroarea
-        const errorData = await response.json();
-        setError(errorData.message || 'Authentication failed');
+        setError(data.message || 'Authentication failed');
       }
     } catch (error) {
       console.error('Login error:', error);
