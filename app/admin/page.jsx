@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './admin.module.scss';
 import Image from 'next/image';
@@ -13,25 +13,9 @@ export default function Admin() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  useEffect(() => {
-    // Verificăm dacă utilizatorul are deja un token valid
-    const checkSession = async () => {
-      try {
-        const response = await fetch('/api/check-session');
-        if (response.ok) {
-          router.push('/admin/dashboard'); // Dacă există o sesiune activă, redirecționăm
-        }
-      } catch (error) {
-        console.error('Session check error:', error);
-      }
-    };
-
-    checkSession();
-  }, [router]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Resetăm eroarea
+    setError(''); // Resetăm mesajul de eroare
 
     try {
       const response = await fetch('/api/login', {
@@ -41,8 +25,10 @@ export default function Admin() {
       });
 
       if (response.ok) {
-        router.push('/admin/dashboard'); // Redirecționăm la dashboard
+        // Dacă răspunsul este de succes, redirecționăm utilizatorul
+        router.push('/admin/dashboard');
       } else {
+        // Dacă autentificarea eșuează, afișăm eroarea
         const errorData = await response.json();
         setError(errorData.message || 'Authentication failed');
       }
