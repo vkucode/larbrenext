@@ -92,7 +92,7 @@ export default function Dashboard() {
     <section className={styles.dashboard}>
 
       <div className='flex flex-row flex-wrap justify-between items-center w-full max-w-6xl mb-5'>
-        <h2 className='text-xl'>Bienvenue sur l'espace Admin</h2>
+        <h2 className='text-xl'>Bienvenue sur l&apos;espace Admin</h2>
         <button onClick={handleLogout} className="!bg-[black] text-white">Logout&nbsp;<IoExitOutline /></button>
       </div>
       
