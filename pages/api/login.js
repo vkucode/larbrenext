@@ -5,12 +5,13 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Permitem doar metodele POST
-  if (req.method !== "POST") {
+  // Permitem doar metodele POST și GET
+  if (req.method !== "POST" && req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { user, pass } = req.body;
+  // Obținem user și pass din req.body sau req.query
+  const { user, pass } = req.method === "POST" ? req.body : req.query;
 
   console.log("User received:", user);
   console.log("Password received:", pass);
