@@ -1,3 +1,4 @@
+// admin.js - Componenta paginii de login
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
