@@ -56,7 +56,7 @@ export default async function handler(req, res) {
     // Setare cookie pentru sesiune
     res.setHeader(
       "Set-Cookie",
-      `${COOKIE_NAME}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=10800;`
+      `${COOKIE_NAME}=${token}; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=10800;`
     );
 
     return res.status(200).json({ message: "Authentication successful" });

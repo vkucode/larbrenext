@@ -9,16 +9,40 @@ import { TbEdit, TbTrash, TbPlus, TbFileText } from "react-icons/tb";
 export default function Dashboard() {
   const [products, setProducts] = useState([]);
   const [selectedType, setSelectedType] = useState('');
-  const [filterNoTechFile, setFilterNoTechFile] = useState(false); // Filtru pentru produse fără fișă tehnică
+  const [filterNoTechFile, setFilterNoTechFile] = useState(false);
   const router = useRouter();
 
+  // Verificăm autentificarea utilizatorului la încărcarea paginii
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    if (!token) {
+      router.push('/admin'); // Redirecționează la pagina de login dacă nu există token
+      return;
+    }
+  }, [router]);
+
+  // Funcție pentru a obține produsele
   const fetchProducts = async () => {
     try {
-      const response = await fetch('https://larbreapains.fr/api/products');
-      const data = await response.json();
-      setProducts(data.products);
+      const token = localStorage.getItem('admin_token');
+      const response = await fetch('https://larbreapains.fr/api/products', {
+        headers: {
+          Authorization: `Bearer ${token}`, // Trimitem token-ul în header
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.products);
+      } else {
+        if (response.status === 401) {
+          localStorage.removeItem('admin_token'); // Ștergem token-ul dacă este invalid
+          router.push('/admin'); // Redirecționăm la login
+        }
+        console.error('Failed to fetch products:', await response.text());
+      }
     } catch (error) {
-      console.error('Failed to fetch products:', error);
+      console.error('Error fetching products:', error);
     }
   };
 
@@ -28,23 +52,21 @@ export default function Dashboard() {
 
   const handleTypeSelection = (type) => {
     setSelectedType(type);
-    setFilterNoTechFile(false); // Resetăm filtrul "fără fișă tehnică" când selectăm un tip
+    setFilterNoTechFile(false);
   };
 
   const toggleNoTechFileFilter = () => {
     setFilterNoTechFile((prev) => !prev);
-    setSelectedType(''); // Resetăm tipul selectat când activăm filtrul "fără fișă tehnică"
+    setSelectedType('');
   };
 
   const filteredProducts = products.filter((product) => {
     if (filterNoTechFile) {
-      // Filtrăm doar produsele fără fișă tehnică sau cu link-ul specific
       return (
         !product.fiche_tech ||
         product.fiche_tech.includes('https://www.larbreapains.fr/ficheTechnique/')
       );
     }
-    // Filtrăm produsele după tip, dacă este selectat unul
     return selectedType ? product.tip_produs === selectedType : true;
   });
 
@@ -52,10 +74,12 @@ export default function Dashboard() {
     const confirmed = confirm('Est-ce que vous êtes sûr de vouloir supprimer ce produit?');
     if (confirmed) {
       try {
+        const token = localStorage.getItem('admin_token');
         const response = await fetch(`https://larbreapains.fr/api/delete?id=${id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, // Trimitem token-ul în header
           },
         });
 
@@ -96,7 +120,6 @@ export default function Dashboard() {
             <div className={styles.controlBtns}>
               <Link href={`/admin/dashboard/${product.id}`}><button>Edit&nbsp;<TbEdit /></button></Link>
               <button onClick={() => deleteProduct(product.id)}>Delete&nbsp;<TbTrash /></button>
-              {/* Adăugăm iconul fișei tehnice cu verificare suplimentară */}
               {product.fiche_tech &&
                 !product.fiche_tech.includes('https://www.larbreapains.fr/ficheTechnique/') && (
                   <a 
