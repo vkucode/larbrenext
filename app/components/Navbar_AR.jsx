@@ -54,7 +54,7 @@ const NavLeft = ({ setIsOpen }) => {
       <Logo />
       <NavLink text="مخبوز" linksite="/ar/cuit" />
       <NavLink text="مجمد" linksite="/ar/surgeler" />
-      <NavLink text="مُعالج" linksite="/ar/traiteur" />
+      {/* <NavLink text="مُعالج" linksite="/ar/traiteur" /> */}
     </div>
   );
 };
@@ -104,7 +104,7 @@ const NavMenu = ({ isOpen }) => {
     >
       <MenuLink text="مخبوز" linksite="/ar/cuit" />
       <MenuLink text="مجمد" linksite="/ar/surgeler" />
-      <MenuLink text="مُعالج" linksite="/ar/traiteur" />
+      {/* <MenuLink text="مُعالج" linksite="/ar/traiteur" /> */}
       <MenuLink text="اتصل بنا" linksite="/ar/#contact" />
     </motion.div>
   );

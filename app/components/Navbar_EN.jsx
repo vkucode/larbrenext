@@ -52,7 +52,7 @@ const NavLeft = ({ setIsOpen }) => {
       <Logo />
       <NavLink text="Baked" linksite="/en/cuit" />
       <NavLink text="Frozen" linksite="/en/surgeler" />
-      <NavLink text="Catering" linksite="/en/traiteur" />
+      {/* <NavLink text="Catering" linksite="/en/traiteur" /> */}
     </div>
   );
 };
@@ -102,7 +102,7 @@ const NavMenu = ({ isOpen }) => {
     >
       <MenuLink text="Baked" linksite="/en/cuit" />
       <MenuLink text="Frozen" linksite="/en/surgeler" />
-      <MenuLink text="Catering" linksite="/en/traiteur" />
+      {/* <MenuLink text="Catering" linksite="/en/traiteur" /> */}
       <MenuLink text="Contact Us" linksite="/en/#contact" />
     </motion.div>
   );

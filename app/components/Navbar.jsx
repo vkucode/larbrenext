@@ -54,7 +54,7 @@ const NavLeft = ({ setIsOpen }) => {
       <Logo />
       <NavLink text="Cuit" linksite="/fr/cuit" />
       <NavLink text="Surgelé" linksite="/fr/surgeler" />
-      <NavLink text="Traiteur" linksite="/fr/traiteur" />
+      {/* <NavLink text="Traiteur" linksite="/fr/traiteur" /> */}
     </div>
   );
 };
@@ -104,8 +104,8 @@ const NavMenu = ({ isOpen }) => {
     >
       <MenuLink text="Cuit" linksite="/fr/cuit" />
       <MenuLink text="Surgelé" linksite="/fr/surgeler" />
-      <MenuLink text="Traiteur" linksite="/fr/traiteur" />
-      <MenuLink text="Nous Contacter" linksite="/fr/#contact" />
+      {/* <MenuLink text="Traiteur" linksite="/fr/traiteur" /> */}
+      <MenuLink text="Nous Contacter" linksite="/fr/accueil#contact" />
     </motion.div>
   );
 };
